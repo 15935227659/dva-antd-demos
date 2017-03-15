@@ -4,6 +4,11 @@
 ```
 npm install dva-cli -g
 ```
+
+### 安装json-server
+```
+npm install json-server -g
+```
 ### 运行本实例
 1. npm install 安装依赖包
 2. npm run start 启动服务，从localhost:8000可看页面效果
