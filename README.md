@@ -78,6 +78,16 @@ headers: {
 typeof value === 'number' 改成typeof +value === 'number'
 ```
 
+
+## API服务
+开发过程使用mock服务代替真实服务器产生json响应。真实环境采用lumen实现的restful api。
+nginx配置文件为nginx\_domain.conf。 API服务代码位于lumen\_api目录中。
+
+
+## 声明
+本代码仅供学习研究使用。前端采用dva+antd开发，api通过lumen开发。代码均手工码出来，测试ok的。
+后续上更详细的介绍文档。这里的仅作个人备忘，记录个人踩坑和解决问题的过程。
+
 ## 参考连接
 1. https://github.com/dvajs/dva/blob/master/README\_zh-CN.md
 2. https://github.com/sorrycc/blog/issues/18
