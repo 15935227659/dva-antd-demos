@@ -21,6 +21,16 @@ npm install json-server -g
 2. dva g model users: 创建users模型
 3. dva g component Users/Users: 创建组件Users/Users
 
+### 前端开发步骤
+1. 创建路由，模型，组件
+2. 创建编辑框
+3. 创建服务service
+4. 添加入口
+
+主要修改类名，模型名，字段列表，以及请求api对应的名称。
+
+到目前为止，CRUD之类的基本页面，都可以用脚手架完成。 然后结合文章后面lumen的脚手架，基本的应用页面就ok了，剩下的就是精工细活了。
+
 ### mock代理配置
 ```
 // .roadhogrc文件中配置
