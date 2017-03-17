@@ -83,6 +83,16 @@ typeof value === 'number' 改成typeof +value === 'number'
 开发过程使用mock服务代替真实服务器产生json响应。真实环境采用lumen实现的restful api。
 nginx配置文件为nginx\_domain.conf。 API服务代码位于lumen\_api目录中。
 
+### lumen脚手架命令集合
+1. php artisan list： 显示所有命令列表
+2. php artisan migrate： 运行数据库迁移
+3. php artisan api:docs： 从备注的控制器中产生API文档
+4. php artisan cache:clear：刷新应用缓存
+5. php artisan db:seed：使用初始化记录初始化数据表
+6. php artisan make:migration：创建迁移文件
+7. php artisan queue：队列相关命令
+8. php artisan schedule:run：运行调度命令
+9. php artisan make:migration create\_users\_table --create=users, 创建[date]\_create\_users\_table.php文件，里边包含初始化迁移的表字段，有创建时间和更新时间之类的。
 
 ## 声明
 本代码仅供学习研究使用。前端采用dva+antd开发，api通过lumen开发。代码均手工码出来，测试ok的。
