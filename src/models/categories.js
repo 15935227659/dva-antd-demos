@@ -18,9 +18,11 @@ export default {
       yield put({
         type: 'save',
         payload: {
-          data,
-          total: parseInt(headers['x-total-count'], 10),
+          data: data['data']['data'],
+          total: data['data'].total,
           page: parseInt(page, 10),
+//          total: parseInt(headers['x-total-count'], 10),
+//          page: parseInt(page, 10),
         },
       });
     },

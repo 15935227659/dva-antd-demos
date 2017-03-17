@@ -36,10 +36,24 @@ class CategoryEditModal extends Component {
     });
   };
 
+  /**
+   * @desc 还有bug, 先暂存
+   */
+  lt100Int = (rule, value, callback) => {
+    console.log(value);
+    const form = this.props.form;
+    if (value && (typeof +value === 'number')) {
+      callback();
+      return;
+    } else {
+      callback('请输入1～99之间的整数');
+    }
+  };
+
   render() {
     const { children } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const { cate1_id, cate1_name, cate2_id, cate2_name } = this.props.record;
+    const { cate1_id, cate1_name, cate2_id, cate2_name, sort_order, icon_name } = this.props.record;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -51,7 +65,7 @@ class CategoryEditModal extends Component {
           { children }
         </span>
         <Modal
-          title="Edit Category"
+          title="编辑分类"
           visible={this.state.visible}
           onOk={this.okHandler}
           onCancel={this.hideModelHandler}
@@ -63,6 +77,13 @@ class CategoryEditModal extends Component {
             >
               {
                 getFieldDecorator('cate1_id', {
+                  rules: [
+                    {type: 'number', min: 1, max: 99, message: '请填写1-99的数字'}, // async-validator插件对于number验证有bug, 尚未修复
+                    {required: true, message: '请输入1-99之间的数字'},
+                    //{validator: this.lt100Int}
+                  ]
+                },
+                {
                   initialValue: cate1_id,
                 })(<Input />)
               }
@@ -83,6 +104,11 @@ class CategoryEditModal extends Component {
             >
               {
                 getFieldDecorator('cate2_id', {
+                  rules: [
+                    {type: 'number', min: 101, max: 9999, message: '请填写1-99的数字, 前两位为一级id值'}, // async-validator插件对于number验证有bug, 尚未修复
+                    {required: true, message: '请输入1-99之间的数字, 前两位是一级id值'},
+                  ]
+                }, {
                   initialValue: cate2_id,
                 })(<Input />)
               }
@@ -97,6 +123,27 @@ class CategoryEditModal extends Component {
                 })(<Input />)
               }
             </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="排序"
+            >
+              {
+                getFieldDecorator('sort_order', {
+                  initialValue: sort_order,
+                })(<Input />)
+              }
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="菜单icon"
+            >
+              {
+                getFieldDecorator('icon_name', {
+                  initialValue: icon_name,
+                })(<Input />)
+              }
+            </FormItem>
+
           </Form>
         </Modal>
       </span>

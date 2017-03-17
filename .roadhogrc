@@ -16,7 +16,8 @@
   },
   "proxy": {
     "/api": {
-      "target": "http://localhost:3004/",
+//      "target": "http://localhost:3004/", // 使用mock服务器
+      "target": "http://192.168.200.30:8099/api", // 使用真是api服务
       "changeOrigin": true,
       "pathRewrite": { "^/api" : "" }
     }
