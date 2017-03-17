@@ -72,6 +72,12 @@ headers: {
 ```
 在配置反向代理的过程中，遇到了一些请求参数代理中丢失的问题。 通过第一行的方式解决。具体原理尚未研究，留待后续研究。[todo]
 
+4. async-validator中对于数值验证有bug, 尚未解决，git上已经有人提出这个问题，作者尚未修复此bug, 修复方法如下:
+```
+// node_modules/async-validator/lib/rule/type.js
+typeof value === 'number' 改成typeof +value === 'number'
+```
+
 ## 参考连接
 1. https://github.com/dvajs/dva/blob/master/README\_zh-CN.md
 2. https://github.com/sorrycc/blog/issues/18
