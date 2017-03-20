@@ -120,3 +120,4 @@ API开发基本就这样，后续可写通用化的脚手架工具。自动生�
 ## 参考连接
 1. https://github.com/dvajs/dva/blob/master/README\_zh-CN.md
 2. https://github.com/sorrycc/blog/issues/18
+3. 其中对ie的支持，参见:https://ant.design/docs/react/getting-started-cn
