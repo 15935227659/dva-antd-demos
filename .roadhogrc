@@ -16,7 +16,9 @@
   },
   "proxy": {
     "/api": {
-      "target": "http://localhost:3004/",
+//      "target": "http://localhost:3004/",
+      "target": "http://qiaoguoqiang.idata.jd.com/api",
+//      "target": "http://192.168.200.30:8099/api",
       "changeOrigin": true,
       "pathRewrite": { "^/api" : "" }
     }

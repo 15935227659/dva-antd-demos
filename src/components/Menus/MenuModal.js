@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import { Modal, Form, Input } from 'antd';
-import styles from './CategoryModal.css';
+import styles from './MenuModal.css';
 
 const FormItem = Form.Item;
 
-class CategoryEditModal extends Component {
+class MenuEditModal extends Component {
 
   constructor(props) {
     super(props);
@@ -53,7 +53,7 @@ class CategoryEditModal extends Component {
   render() {
     const { children } = this.props;
     const { getFieldDecorator } = this.props.form;
-    const { cate1_id, cate1_name, cate2_id, cate2_name, sort_order, icon_name } = this.props.record;
+    const { p_id, menu_name, menu_url, data_source, data_owner, form_owner, sort_order } = this.props.record;
     const formItemLayout = {
       labelCol: { span: 6 },
       wrapperCol: { span: 14 },
@@ -65,7 +65,7 @@ class CategoryEditModal extends Component {
           { children }
         </span>
         <Modal
-          title="编辑分类"
+          title="编辑菜单"
           visible={this.state.visible}
           onOk={this.okHandler}
           onCancel={this.hideModelHandler}
@@ -73,47 +73,67 @@ class CategoryEditModal extends Component {
           <Form horizontal onSubmit={this.okHandler}>
             <FormItem
               {...formItemLayout}
-              label="一级分类ID"
+              label="菜单名称"
             >
               {
-                getFieldDecorator('cate1_id', {
-                  initialValue: cate1_id,
+                getFieldDecorator('menu_name', {
+                  initialValue: menu_name,
                 })(<Input />)
               }
             </FormItem>
             <FormItem
               {...formItemLayout}
-              label="一级分类名称"
+              label="菜单URL"
             >
               {
-                getFieldDecorator('cate1_name', {
-                  initialValue: cate1_name,
+                getFieldDecorator('menu_url', {
+                  initialValue: menu_url,
                 })(<Input />)
               }
             </FormItem>
             <FormItem
               {...formItemLayout}
-              label="二级分类ID"
+              label="所属分类"
             >
               {
-                getFieldDecorator('cate2_id', {
-                  initialValue: cate2_id,
+                getFieldDecorator('p_id', {
+                  initialValue: p_id,
                 })(<Input />)
               }
             </FormItem>
             <FormItem
               {...formItemLayout}
-              label="二级分类名称"
+              label="数据源"
             >
               {
-                getFieldDecorator('cate2_name', {
-                  initialValue: cate2_name,
+                getFieldDecorator('data_source', {
+                  initialValue: data_source,
                 })(<Input />)
               }
             </FormItem>
             <FormItem
               {...formItemLayout}
-              label="排序"
+              label="数据提供者"
+            >
+              {
+                getFieldDecorator('data_owner', {
+                  initialValue: data_owner,
+                })(<Input />)
+              }
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="报表所有者"
+            >
+              {
+                getFieldDecorator('form_owner', {
+                  initialValue: form_owner,
+                })(<Input />)
+              }
+            </FormItem>
+            <FormItem
+              {...formItemLayout}
+              label="排序编号"
             >
               {
                 getFieldDecorator('sort_order', {
@@ -121,17 +141,6 @@ class CategoryEditModal extends Component {
                 })(<Input />)
               }
             </FormItem>
-            <FormItem
-              {...formItemLayout}
-              label="菜单icon"
-            >
-              {
-                getFieldDecorator('icon_name', {
-                  initialValue: icon_name,
-                })(<Input />)
-              }
-            </FormItem>
-
           </Form>
         </Modal>
       </span>
@@ -139,4 +148,4 @@ class CategoryEditModal extends Component {
   }
 }
 
-export default Form.create()(CategoryEditModal);
+export default Form.create()(MenuEditModal);
