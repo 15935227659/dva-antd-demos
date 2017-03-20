@@ -77,6 +77,13 @@ class CategoryEditModal extends Component {
             >
               {
                 getFieldDecorator('cate1_id', {
+                  rules: [
+                    {type: 'number', min: 1, max: 99, message: '请填写1-99的数字'}, // async-validator插件对于number验证有bug, 尚未修复
+                    {required: true, message: '请输入1-99之间的数字'},
+                    //{validator: this.lt100Int}
+                  ]
+                },
+                {
                   initialValue: cate1_id,
                 })(<Input />)
               }
@@ -97,6 +104,11 @@ class CategoryEditModal extends Component {
             >
               {
                 getFieldDecorator('cate2_id', {
+                  rules: [
+                    {type: 'number', min: 101, max: 9999, message: '请填写1-99的数字, 前两位为一级id值'}, // async-validator插件对于number验证有bug, 尚未修复
+                    {required: true, message: '请输入1-99之间的数字, 前两位是一级id值'},
+                  ]
+                }, {
                   initialValue: cate2_id,
                 })(<Input />)
               }
