@@ -55,7 +55,7 @@ class AuthEditModal extends Component {
           onOk={this.okHandler}
           onCancel={this.hideModelHandler}
         >
-          <Form horizontal onSubmit={this.okHandler}>
+          <Form layout="horizontal" onSubmit={this.okHandler}>
             <FormItem
               {...formItemLayout}
               label="菜单名称"
@@ -64,16 +64,6 @@ class AuthEditModal extends Component {
               {
                 getFieldDecorator('menu_id', {
                   initialValue: id,
-                })(<Input type="hidden" />)
-              }
-              {
-                getFieldDecorator('p_id', {
-                  initialValue: p_id,
-                })(<Input type="hidden" />)
-              }
-              {
-                getFieldDecorator('type', {
-                  initialValue: 'menu',
                 })(<Input type="hidden" />)
               }
             </FormItem>
@@ -87,6 +77,16 @@ class AuthEditModal extends Component {
                 })(<Input type="textarea" rows="4" placeholder="请输入erp,多个erp使用英文逗号分割" />)
               }
             </FormItem>
+            { /* 保持FormItem中单个控件 */
+              getFieldDecorator('type', {
+                initialValue: 'menu',
+              })(<Input type="hidden" />)
+            }
+            {
+              getFieldDecorator('p_id', {
+                initialValue: p_id,
+              })(<Input type="hidden" />)
+            }
           </Form>
         </Modal>
       </span>

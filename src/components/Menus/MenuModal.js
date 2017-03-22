@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import { Modal, Form, Input } from 'antd';
+import { Modal, Form, Input, Select } from 'antd';
 import styles from './MenuModal.css';
 
 const FormItem = Form.Item;
+const Option = Select.Option;
 
 class MenuEditModal extends Component {
 
@@ -52,6 +53,7 @@ class MenuEditModal extends Component {
 
   render() {
     const { children } = this.props;
+    const { categories } = this.props;
     const { getFieldDecorator } = this.props.form;
     const { p_id, menu_name, menu_url, data_source, data_owner, form_owner, sort_order } = this.props.record;
     const formItemLayout = {
@@ -59,6 +61,19 @@ class MenuEditModal extends Component {
       wrapperCol: { span: 14 },
     };
 
+    const cateOptions = [];
+    for(var category in categories) {
+      cateOptions.push(
+        <Option key={category}>
+          {categories[category]['cate1_name'] + ' - ' + categories[category]['cate2_name']}
+        </Option>
+      );
+    }
+
+    let defCate = '';
+    if(p_id) {
+      defCate = categories[p_id]['cate1_name'] + ' - ' + categories[p_id]['cate2_name'];
+    }
     return (
       <span>
         <span onClick={this.showModelHandler}>
@@ -70,7 +85,7 @@ class MenuEditModal extends Component {
           onOk={this.okHandler}
           onCancel={this.hideModelHandler}
         >
-          <Form horizontal onSubmit={this.okHandler}>
+          <Form layout="horizontal" onSubmit={this.okHandler}>
             <FormItem
               {...formItemLayout}
               label="菜单名称"
@@ -97,8 +112,12 @@ class MenuEditModal extends Component {
             >
               {
                 getFieldDecorator('p_id', {
-                  initialValue: p_id,
-                })(<Input />)
+                  initialValue: defCate,
+                })(
+                  <Select placeholder="请选择产品线">
+                    {cateOptions}
+                  </Select>
+                )
               }
             </FormItem>
             <FormItem

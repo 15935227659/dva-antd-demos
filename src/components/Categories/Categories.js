@@ -45,25 +45,24 @@ function Categories({ dispatch, list: dataSource, loading, total, page: current 
 
   const columns = [
     {
-      title: '一级分类ID',
-      dataIndex: 'cate1_id',
-      key: 'cate1_id',
-      render: text => <a href="">{text}</a>,
-    },
-    {
       title: '一级分类',
       dataIndex: 'cate1_name',
       key: 'cate1_name',
     },
     {
-      title: '二级分类ID',
-      dataIndex: 'cate2_id',
-      key: 'cate2_id',
+      title: '一级分类ID',
+      dataIndex: 'cate1_id',
+      key: 'cate1_id',
     },
     {
       title: '二级分类',
       dataIndex: 'cate2_name',
       key: 'cate2_name',
+    },
+    {
+      title: '二级分类ID',
+      dataIndex: 'cate2_id',
+      key: 'cate2_id',
     },
     {
       title: '权限用户列表',

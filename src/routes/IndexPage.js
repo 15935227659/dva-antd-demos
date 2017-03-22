@@ -1,20 +1,35 @@
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { connect } from 'dva';
-import styles from './IndexPage.css';
+import { Spin } from 'antd';
 import MainLayout from '../components/MainLayout/MainLayout';
+import styles from './IndexPage.css';
+import Login from './Login';
 
-function IndexPage({ location }) {
+function App ({ children, location, dispatch, app, loading }) {
+  const { login, loginButtonLoading } = app;
+  const loginProps = {
+    loading,
+    loginButtonLoading,
+    onOk(data) {
+      dispatch({ type: 'app/login', payload: data })
+    }
+  };
   return (
-    <MainLayout location={location}>
-      <div className={styles.normal}>
-        <h1 className={styles.title}>欢迎进入数据门户管理中心</h1>
-        <div className={styles.welcome} />
-      </div>
-    </MainLayout>
+    <div>{login ?
+      <MainLayout location={location}>
+        <div>Home Page</div>
+      </MainLayout>
+    : <div className={styles.spin}><Spin tip="加载用户信息..." spinning={loading} size="large"><Login {...loginProps} /></Spin></div>
+    }</div>
   );
 }
 
-IndexPage.propTypes = {
-};
+function mapStateToProps({app, loading}) {
+  return {
+    app,
+    loading: loading.models.app
+  };
+}
+//    : <div className={styles.spin}><Spin tip="加载用户信息..." spinning={loading} size="large"><Login {...loginProps} /></Spin></div>
 
-export default connect()(IndexPage);
+export default connect(mapStateToProps)(App)

@@ -55,7 +55,7 @@ class AuthEditModal extends Component {
           onOk={this.okHandler}
           onCancel={this.hideModelHandler}
         >
-          <Form horizontal onSubmit={this.okHandler}>
+          <Form layout="horizontal" onSubmit={this.okHandler}>
             <FormItem
               {...formItemLayout}
               label="分类名称"
@@ -64,11 +64,6 @@ class AuthEditModal extends Component {
               {
                 getFieldDecorator('p_id', {
                   initialValue: cate2_id,
-                })(<Input type="hidden" />)
-              }
-              {
-                getFieldDecorator('type', {
-                  initialValue: 'cate',
                 })(<Input type="hidden" />)
               }
             </FormItem>
@@ -82,6 +77,11 @@ class AuthEditModal extends Component {
                 })(<Input type="textarea" rows="4" placeholder="请输入erp,多个erp使用英文逗号分割" />)
               }
             </FormItem>
+            {
+              getFieldDecorator('type', {
+                initialValue: 'cate',
+              })(<Input type="hidden" />)
+            }
           </Form>
         </Modal>
       </span>

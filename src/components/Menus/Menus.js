@@ -7,7 +7,7 @@ import { PAGE_SIZE } from '../../constants';
 import MenuModal from './MenuModal';
 import AuthModal from './AuthModal';
 
-function Menus({ dispatch, list: dataSource, loading, total, page: current }) {
+function Menus({ dispatch, list: dataSource, loading, total, page: current, categories }) {
   function deleteHandler(id) {
     dispatch({
       type: 'menus/remove',
@@ -43,12 +43,20 @@ function Menus({ dispatch, list: dataSource, loading, total, page: current }) {
     });
   }
 
+  const cateMaps = {};
+  categories.map(function(category) {
+    cateMaps[category.cate2_id] = category;
+  });
+
+  dataSource.map(function(menu) {
+    const cate = cateMaps[menu.p_id];
+    menu['cate_name'] = cate['cate1_name'] + '-' + cate['cate2_name'];
+  });
   const columns = [
     {
       title: '菜单名称',
       dataIndex: 'menu_name',
       key: 'menu_name',
-      render: text => <a href="">{text}</a>,
     },
     {
       title: '菜单URL',
@@ -57,8 +65,8 @@ function Menus({ dispatch, list: dataSource, loading, total, page: current }) {
     },
     {
       title: '所属分类',
-      dataIndex: 'p_id',
-      key: 'p_id',
+      dataIndex: 'cate_name',
+      key: 'cate_name',
     },
     {
       title: '数据源',
@@ -90,7 +98,7 @@ function Menus({ dispatch, list: dataSource, loading, total, page: current }) {
       key: 'operation',
       render: (text, record) => (
         <span className={styles.operation}>
-          <MenuModal record={record} onOk={editHandler.bind(null, record.id)}>
+          <MenuModal record={record} categories={cateMaps} onOk={editHandler.bind(null, record.id)}>
             <a>编辑</a>
           </MenuModal>
           <Popconfirm title="确认删除?" onConfirm={deleteHandler.bind(null, record.id)}>
@@ -108,7 +116,7 @@ function Menus({ dispatch, list: dataSource, loading, total, page: current }) {
     <div className={styles.normal}>
       <div>
         <div className={styles.create}>
-          <MenuModal record={{}} onOk={createHandler}>
+          <MenuModal record={{}} categories={cateMaps} onOk={createHandler}>
             <Button type="primary">新建菜单</Button>
           </MenuModal>
         </div>
@@ -133,10 +141,11 @@ function Menus({ dispatch, list: dataSource, loading, total, page: current }) {
 }
 
 function mapStateToProps(state) {
-  const { list, total, page } = state.menus;
+  const { list, total, page, categories } = state.menus;
   return {
     loading: state.loading.models.menus,
     list,
+    categories,
     total,
     page,
   };

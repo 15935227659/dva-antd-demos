@@ -6,10 +6,11 @@ export default {
     list: [],
     total: null,
     page: null,
+    categories: [],
   },
   reducers: {
-    save(state, { payload: { data: list, total, page } }) {
-      return { ...state, list, total, page };
+    save(state, { payload: { data: list, total, page, categories } }) {
+      return { ...state, list, total, page, categories };
     },
   },
   effects: {
@@ -18,8 +19,9 @@ export default {
       yield put({
         type: 'save',
         payload: {
-          data: data['data']['data'],
-          total: data['data'].total,
+          data: data['data']['menus']['data'],
+          categories: data['data']['categories'],
+          total: data['data']['menus'].total,
           page: parseInt(page, 10),
 //          total: parseInt(headers['x-total-count'], 10),
 //          page: parseInt(page, 10),
