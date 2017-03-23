@@ -85,9 +85,9 @@ const modal = ({
             ],
           })(<Input />)}
         </FormItem>
-            <FormItem
+            <FormItem hasFeedback
               {...formItemLayout}
-              label="所属分类"
+              label="所属分类:"
             >
               {
                 getFieldDecorator('p_id', {

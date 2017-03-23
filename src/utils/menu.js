@@ -5,6 +5,11 @@ module.exports = [
     icon: 'laptop',
   },
   {
+    key: 'categories',
+    name: '分类管理',
+    icon: 'layout',
+  },
+  {
     key: 'menus',
     name: '菜单管理',
     icon: 'link',
@@ -14,7 +19,7 @@ module.exports = [
     name: '用户管理',
     icon: 'user',
   },
-  {
+/*  {
     key: 'UIElement',
     name: 'UI组件',
     icon: 'camera-o',
@@ -66,5 +71,5 @@ module.exports = [
         ],
       },
     ],
-  },
+  },*/
 ]

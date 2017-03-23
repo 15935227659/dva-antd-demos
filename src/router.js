@@ -42,6 +42,15 @@ const Routers = function({ history, app }) {
               cb(null, require('./routes/menus/'))
             }, 'menus')
           }
+        },{
+          path: 'categories',
+          name: 'categories',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/categories'))
+              cb(null, require('./routes/categories/'))
+            }, 'categories')
+          }
         }
       ]
     }

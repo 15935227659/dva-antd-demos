@@ -116,12 +116,55 @@ API开发基本就这样，后续可写通用化的脚手架工具。自动生�
 ## 使用动态路由实现
 动态路由实现代码位于src中，上面介绍的代码位于src-orig目录。
 
+动态路由实现步骤
+### 添加菜单
+在src/utils/menu.js中添加菜单配置项。
+```
+  {
+    key: 'categories',
+    name: '分类管理',
+    icon: 'layout',
+  },
+```
+* key: 对应具体的url子部分，和router强相关的。
+* name: 菜单名称
+* icon: 菜单展示的时候前面显示的icon
+* clickable: 是否可点击
+* child: 子菜单配置
+
+### 添加动态路由
+在src/router.js中添加动态路由， dva命令暂时不支持动态路由的脚手架。可自行实现。
+
+```
+        {
+          path: 'dashboard',
+          name: 'dashboard',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/dashboard'))
+              cb(null, require('./routes/dashboard/'))
+            }, 'dashboard')
+          },
+        }
+```
+
+* path: URL path
+* name: 保持和上面一致就可以了
+* getComponent: 这个是创建动态路由的方法。
+
+
+### 其他介绍
+动态路由设置好了之后，后面的开发模式基本和之前的类似。 每个路由都在router.js中产生，同时注册model, 而不用在index.js中注册model。
+
+另外，这个项目结构做了些许调整，components子目录完全放全局共享的组件。 而routes里边放的全是容器组件。容器组件用到的私有组件还是放在容器相关的目录中。而共享的才放入到components目录中。
+
+
 ## 开发过程中遇到的坑
 * Modal中的confirm, 2.8.1版本中，不提供onCancel会报错，这个bug已经有人提出，并且已经修正，在antd 2.8.2中已经修复。可以使用npm install antd@latest来升级。
 
 
 ## 声明
-本代码仅供学习研究使用。前端采用dva+antd开发，api通过lumen开发。代码均手工码出来，测试ok的。
+本代码仅供学习研究使用。前端采用dva+antd开发，api通过lumen开发。代码均手工码出来，测试ok的。 动态路由模式开发参考antd-admin代码实现，界面直接扣过来用， 仅供学习之后，见谅。
 后续上更详细的介绍文档。这里的仅作个人备忘，记录个人踩坑和解决问题的过程。
 
 ## 参考连接

@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Table, Modal, Popconfirm } from 'antd'
-import styles from './MenuList.css'
+import styles from './CategoryList.css'
 import classnames from 'classnames'
 import AnimTableBody from '../../components/DataTable/AnimTableBody'
 import { DropOption } from '../../components'
@@ -10,7 +10,6 @@ const confirm = Modal.confirm
 function List ({
   loading,
   dataSource,
-  categories,
   pagination,
   onPageChange,
   onDeleteItem,
@@ -37,45 +36,24 @@ function List ({
 
   const columns = [
     {
-      title: '菜单名称',
-      dataIndex: 'menu_name',
-      key: 'menu_name',
-      width: 150,
-      fixed: 'left',
+      title: '一级分类',
+      dataIndex: 'cate1_name',
+      key: 'cate1_name',
     },
     {
-      title: '菜单URL',
-      dataIndex: 'menu_url',
-      key: 'menu_url',
-      width: 200,
-      fixed: 'left',
+      title: '一级分类ID',
+      dataIndex: 'cate1_id',
+      key: 'cate1_id',
     },
     {
-      title: '所属分类',
-      dataIndex: 'p_id',
-      key: 'p_id',
-      width: 180,
-      render: (text) => <span>{categories[text] ? categories[text]['cate_name'] : '未设置'}</span>
+      title: '二级分类',
+      dataIndex: 'cate2_name',
+      key: 'cate2_name',
     },
     {
-      title: '数据源',
-      dataIndex: 'data_source',
-      key: 'data_source',
-    },
-    {
-      title: '数据源负责人',
-      dataIndex: 'data_owner',
-      key: 'data_owner',
-    },
-    {
-      title: '报表负责人',
-      dataIndex: 'form_owner',
-      key: 'form_owner',
-    },
-    {
-      title: '排序编号',
-      dataIndex: 'sort_order',
-      key: 'sort_order',
+      title: '二级分类ID',
+      dataIndex: 'cate2_id',
+      key: 'cate2_id',
     },
     {
       title: '权限用户列表',

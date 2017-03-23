@@ -1,11 +1,10 @@
-import * as servs from '../services/menus'
+import * as servs from '../services/categories'
 import { parse } from 'qs'
 
 export default {
-  namespace: 'menus',
+  namespace: 'categories',
   state: {
     list: [],
-    categories: [],
     currentItem: {},
     modalVisible: false,
     modalType: 'create',
@@ -23,7 +22,7 @@ export default {
   subscriptions: {
     setup ({ dispatch, history }) {
       history.listen(location => {
-        if (location.pathname === '/menus') {
+        if (location.pathname === '/categories') {
           dispatch({
             type: 'query',
             payload: location.query,
@@ -39,12 +38,11 @@ export default {
       yield put({
         type: 'querySuccess',
         payload: {
-          list: data['data']['menus']['data'],
-          categories: data['data']['categories'],
-          total: data['data']['menus'].total,
+          list: data['data']['data'],
+          total: data['data'].total,
           pagination: {
-            current: data['data']['menus'].current_page,
-            total: data['data']['menus'].total,
+            current: data['data'].current_page,
+            total: data['data'].total,
           }
         },
       });
@@ -65,14 +63,14 @@ export default {
     },
     *update ({ payload }, { select, call, put }) {
       yield put({ type: 'hideModal' })
-      const id = yield select(({ menus }) => menus.currentItem.id)
+      const id = yield select(({ categories }) => categories.currentItem.id)
       const newItem = { ...payload, id }
       const { data, headers } = yield call(servs.update, newItem)
       yield put({ type: 'reload' });
     },
     *reload(action, { put, select }) {
       const pagination = yield select(state => {
-        return state.menus.pagination
+        return state.categories.pagination
       });
       //yield put({ type: 'query', payload: { pagination } });
       // 编辑、删除、新增、权限保存后都重新刷新列表

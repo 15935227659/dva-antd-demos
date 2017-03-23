@@ -5,6 +5,7 @@ import { connect } from 'dva'
 import MenuList from './MenuList'
 import MenuFilter from './MenuFilter'
 import MenuModal from './MenuModal'
+import AuthModal from './AuthModal'
 
 function Menus ({ location, dispatch, menus, loading }) {
   const {
@@ -12,6 +13,7 @@ function Menus ({ location, dispatch, menus, loading }) {
     pagination,
     currentItem,
     modalVisible,
+    authVisible,
     modalType,
     categories,
     isMotion
@@ -49,6 +51,22 @@ function Menus ({ location, dispatch, menus, loading }) {
     }
   }
 
+  const authModalProps = {
+    item: currentItem,
+    visible: authVisible,
+    onOk(data) { // 成功提交表单
+      dispatch({
+        type: `menus/auth`,
+        payload: data,
+      })
+    },
+    onCancel() {
+      dispatch({
+        type: 'menus/hideAuth'
+      })
+    }
+  }
+
   // 列表属性
   const menuListProps = {
     dataSource: list,
@@ -79,6 +97,14 @@ function Menus ({ location, dispatch, menus, loading }) {
         type: 'menus/showModal',
         payload: {
           modalType: 'update',
+          currentItem: item,
+        }
+      })
+    },
+    onAuthItem (item) { // 授权
+      dispatch({
+        type: 'menus/showAuth',
+        payload: {
           currentItem: item,
         }
       })
@@ -131,6 +157,7 @@ function Menus ({ location, dispatch, menus, loading }) {
       <MenuFilter {...menuFilterProps} />
       <MenuList {...menuListProps} />
       <MenuModalGen />
+      <AuthModal {...authModalProps} />
     </div>
   )
 }
