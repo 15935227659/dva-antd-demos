@@ -95,7 +95,6 @@ const modal = ({
                   rules: [
                     {
                       required: true,
-                      type: 'number',
                       message: '请选择产品线',
                     },
                   ],
