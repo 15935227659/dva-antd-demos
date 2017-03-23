@@ -1,61 +1,105 @@
-import * as menusService from '../services/menus';
+import * as servs from '../services/menus'
+import { parse } from 'qs'
 
 export default {
   namespace: 'menus',
   state: {
     list: [],
-    total: null,
-    page: null,
     categories: [],
-  },
-  reducers: {
-    save(state, { payload: { data: list, total, page, categories } }) {
-      return { ...state, list, total, page, categories };
+    currentItem: {},
+    modalVisible: false,
+    modalType: 'create',
+    isMotion: localStorage.getItem('idataUserIsMotion') === 'true',
+    pagination: {
+      showSizeChanger: true,
+      showQuickJumper: true,
+      showTotal: total => `共 ${total} 条`,
+      current: 1,
+      total: null,
     },
   },
+
+  subscriptions: {
+    setup ({ dispatch, history }) {
+      history.listen(location => {
+        if (location.pathname === '/menus') {
+          dispatch({
+            type: 'query',
+            payload: location.query,
+          })
+        }
+      })
+    },
+  },
+
   effects: {
-    *fetch({ payload: { page = 1 } }, { call, put }) {
-      const { data, headers } = yield call(menusService.fetch, { page });
+    *query ({ payload }, { call, put }) {
+      const { data, headers } = yield call(servs.query, parse(payload))
       yield put({
-        type: 'save',
+        type: 'querySuccess',
         payload: {
-          data: data['data']['menus']['data'],
+          list: data['data']['menus']['data'],
           categories: data['data']['categories'],
           total: data['data']['menus'].total,
-          page: parseInt(page, 10),
-//          total: parseInt(headers['x-total-count'], 10),
-//          page: parseInt(page, 10),
+          pagination: {
+            current: data['data']['menus'].current_page,
+            total: data['data']['menus'].total,
+          }
         },
       });
     },
-    *remove({ payload: id }, { call, put }) {
-      yield call(menusService.remove, id);
+    *'delete' ({ payload }, { call, put }) {
+      const data = yield call(servs.remove, payload)
+      yield put({ type: 'reload' })
+    },
+    *create ({ payload }, { call, put }) {
+      yield put({ type: 'hideModal' })
+      const { data, headers } = yield call(servs.create, payload)
       yield put({ type: 'reload' });
     },
-    *patch({ payload: { id, values } }, { call, put }) {
-      yield call(menusService.patch, id, values);
-      yield put({ type: 'reload' });
-    },
-    *auth({ payload: values }, { call, put }) {
-      yield call(menusService.auth, values);
-      yield put({ type: 'reload' });
-    },
-    *create({ payload: values }, { call, put }) {
-      yield call(menusService.create, values);
+    *update ({ payload }, { select, call, put }) {
+      yield put({ type: 'hideModal' })
+      const id = yield select(({ menus }) => menus.currentItem.id)
+      const newItem = { ...payload, id }
+      const { data, headers } = yield call(servs.update, newItem)
       yield put({ type: 'reload' });
     },
     *reload(action, { put, select }) {
-      const page = yield select(state => state.menus.page);
-      yield put({ type: 'fetch', payload: { page } });
-    },
-  },
-  subscriptions: {
-    setup({ dispatch, history }) {
-      return history.listen(({ pathname, query }) => {
-        if (pathname === '/menus') {
-          dispatch({ type: 'fetch', payload: query });
-        }
+      const pagination = yield select(state => {
+        console.log(state)
+        return state.menus.pagination
       });
+      yield put({ type: 'query', payload: { pagination } });
+    },
+    *switchIsMotion ({
+      payload,
+    }, { put }) {
+      yield put({
+        type: 'handleSwitchIsMotion',
+      })
     },
   },
-};
+
+  reducers: {
+    querySuccess (state, action) {
+      const { list, pagination, categories } = action.payload
+      return { ...state,
+        list,
+        categories,
+        pagination: {
+          ...state.pagination,
+          ...pagination,
+        } }
+    },
+    showModal (state, action) {
+      return { ...state, ...action.payload, modalVisible: true }
+    },
+    hideModal (state) {
+      return { ...state, modalVisible: false }
+    },
+    handleSwitchIsMotion (state) {
+      localStorage.setItem('idataUserIsMotion', !state.isMotion)
+      return { ...state, isMotion: !state.isMotion }
+    },
+  },
+}

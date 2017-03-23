@@ -1,19 +1,8 @@
 import request from '../utils/request';
 import { PAGE_SIZE } from '../constants';
-import qs from 'qs'
 
-export function query(values) {
-  return request('/api/menu?' + qs.stringify(values));
-}
-
-export function remove(id) {
-  return request(`/api/menu/${id}`, {
-    method: 'DELETE',
-  });
-}
-
-export function update(values) {
-  return request(`/api/menu/${values.id}`, {
+export function patch(id, values) {
+  return request(`/api/category/${id}`, {
     method: 'PATCH',
     headers: {
       'Accept': 'application/json',
@@ -23,24 +12,30 @@ export function update(values) {
   });
 }
 
-export function create(values) {
-  return request('/api/menu', {
+export function login(values) {
+  return request(`/api/login`, {
+    method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json', // 修复api不能正确解析请求body的问题
     },
-    method: 'POST',
     body: JSON.stringify(values),
   });
 }
 
-export function auth(values) {
-  return request('/api/authority', {
+export function logout(values) {
+  return request(`/api/logout`, {
+    method: 'POST',
     headers: {
       'Accept': 'application/json',
       'Content-Type': 'application/json', // 修复api不能正确解析请求body的问题
     },
-    method: 'POST',
     body: JSON.stringify(values),
+  });
+}
+
+export function userInfo(values) {
+  return request(`/api/userInfo`, {
+    method: 'GET',
   });
 }

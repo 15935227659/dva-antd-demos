@@ -1,9 +1,8 @@
 import request from '../utils/request';
 import { PAGE_SIZE } from '../constants';
-import qs from 'qs'
 
-export function query(values) {
-  return request('/api/menu?' + qs.stringify(values));
+export function fetch({ page }) {
+  return request(`/api/menu?page=${page}&limit=${PAGE_SIZE}`);
 }
 
 export function remove(id) {
@@ -12,8 +11,8 @@ export function remove(id) {
   });
 }
 
-export function update(values) {
-  return request(`/api/menu/${values.id}`, {
+export function patch(id, values) {
+  return request(`/api/menu/${id}`, {
     method: 'PATCH',
     headers: {
       'Accept': 'application/json',

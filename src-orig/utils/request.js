@@ -10,13 +10,12 @@ function checkStatus(response) {
   throw error;
 }
 
-
 /**
- * 请求URL, 返回promise实例
+ * Requests a URL, returning a promise.
  *
- * @param  {string} url       请求URL
- * @param  {object} [options] 获取数据所传递的选项
- * @return {object}           返回包含data或err的对象
+ * @param  {string} url       The URL we want to request
+ * @param  {object} [options] The options we want to pass to "fetch"
+ * @return {object}           An object containing either "data" or "err"
  */
 export default async function request(url, options) {
   const response = await fetch(url, options);
@@ -37,4 +36,3 @@ export default async function request(url, options) {
 
   return ret;
 }
-
