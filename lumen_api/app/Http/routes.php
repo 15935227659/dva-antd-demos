@@ -44,6 +44,10 @@ $api = $app['api.router'];
 $api->version('v1', function ($api) {
     rest($api, 'quote');
     rest($api, 'category');
+    rest($api, 'menu');
+    rest($api, 'authority');
 
-    rest($api, 'sortFilters');
+    $api->post('login', 'App\\Http\\Controllers\\UserController@login');
+    $api->post('logout', 'App\\Http\\Controllers\\UserController@logout');
+    $api->get('userInfo', 'App\\Http\\Controllers\\UserController@info');
 });

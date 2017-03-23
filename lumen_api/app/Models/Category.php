@@ -12,6 +12,11 @@ final class Category extends Model
     public static function search(Request $request)
     {
         $pagesize = $request->input('limit') ?? 20;
-        return static::paginate($pagesize);
+        $result = app('db')->table('categories')
+                    ->leftJoin('authorities', 'categories.cate2_id', '=', 'authorities.p_id')
+                    ->select('categories.*', 'authorities.auth_users')
+                    ->paginate($pagesize);
+
+        return $result;
     }
 }
