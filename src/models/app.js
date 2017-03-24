@@ -4,7 +4,7 @@ import { parse } from 'qs';
 export default {
   namespace: 'app',
   state: {
-    login: false, // 登录状态标志
+    login: true, // 登录状态标志
     user: { // 登录用户信息
       name: '',
     },

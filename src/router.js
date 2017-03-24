@@ -42,7 +42,7 @@ const Routers = function({ history, app }) {
               cb(null, require('./routes/menus/'))
             }, 'menus')
           }
-        },{
+        }, {
           path: 'categories',
           name: 'categories',
           getComponent (nextState, cb) {
@@ -51,11 +51,19 @@ const Routers = function({ history, app }) {
               cb(null, require('./routes/categories/'))
             }, 'categories')
           }
+        }, {
+          path: 'users',
+          name: 'users',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/users'))
+              cb(null, require('./routes/users/'))
+            }, 'categories')
+          }
         }
       ]
     }
   ];
-
 
   return <Router history={history} routes={routes} />
 }

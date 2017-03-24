@@ -54,7 +54,7 @@ function App({ children, location, dispatch, app, loading }) {
   }
 
   return (
-    <div>{!login
+    <div>{login
       ? <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
           {!isNavbar ? <aside className={classnames(styles.sider, { [styles.light]: !darkTheme })}>
             <Sider {...siderProps} />
