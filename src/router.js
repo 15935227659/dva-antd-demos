@@ -60,7 +60,15 @@ const Routers = function({ history, app }) {
               cb(null, require('./routes/users/'))
             }, 'categories')
           }
-        }
+        }, {
+          path: '*',
+          name: 'error',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              cb(null, require('./routes/error/'))
+            }, 'error')
+          },
+        },
       ]
     }
   ];
