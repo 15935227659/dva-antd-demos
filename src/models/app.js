@@ -11,6 +11,8 @@ export default {
     },
     loginButtonLoading: false, // 登录按钮加载中
     menuPopoverVisible: false,
+    loginMsgShow: false, // 是否显示登录错误信息
+    errMsg: '', // 登录错误信息
     siderFold: localStorage.getItem('idataSiderFold') === 'true',
     darkTheme: localStorage.getItem('idataDarkTheme') !== 'false',
     isNavbar: document.body.clientWidth < 769,
@@ -30,7 +32,7 @@ export default {
     }, { call, put }) {
       yield put({ type: 'showLoginButtonLoading' })
       const { data, headers } = yield call(mainService.login, parse(payload))
-      if (data.code === 200) {
+      if (data['data']['status'] == '0') {
         // 登陆成功，写cookie, 这里不太安全，后续扩展
         const now = new Date()
         now.setDate(now.getDate() + 1)
@@ -48,6 +50,10 @@ export default {
       } else {
         yield put({
           type: 'loginFail',
+          payload: {
+            loginMsgShow: true,
+            errMsg: data['data']['msg']
+          }
         })
       }
     },
@@ -122,13 +128,16 @@ export default {
       return {
         ...state,
         login: false,
+        loginMsgShow: false,
       }
     },
-    loginFail (state) {
+    loginFail (state, action) {
       return {
         ...state,
+        ...action.payload,
         login: false,
         loginButtonLoading: false,
+        loginMsgShow: true,
       }
     },
     showLoginButtonLoading (state) {

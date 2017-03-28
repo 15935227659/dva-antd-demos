@@ -2,7 +2,7 @@ import React, { PropTypes } from 'react'
 import { Table } from 'antd'
 import { request } from '../../utils'
 import lodash from 'lodash'
-import './DataTable.css'
+import './DataTable.less'
 
 class DataTable extends React.Component {
   constructor (props) {

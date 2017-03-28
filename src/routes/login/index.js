@@ -1,5 +1,5 @@
 import React, { PropTypes } from 'react'
-import { Button, Row, Form, Input } from 'antd'
+import { Button, Row, Form, Input, Alert } from 'antd'
 import { config } from '../../utils'
 import styles from './index.less'
 
@@ -8,6 +8,8 @@ const FormItem = Form.Item
 const login = ({
   loginButtonLoading,
   onOk,
+  loginMsgShow,
+  errMsg,
   form: {
     getFieldDecorator,
     validateFieldsAndScroll,
@@ -26,7 +28,7 @@ const login = ({
     <div className={styles.form}>
       <div className={styles.logo}>
         <img alt={'logo'} src={config.logoSrc} />
-        <span>Ant Design</span>
+        <span>数据门户</span>
       </div>
       <form>
         <FormItem hasFeedback>
@@ -54,10 +56,7 @@ const login = ({
             登录
           </Button>
         </Row>
-        <p>
-          <span>账号：guest</span>
-          <span>密码：guest</span>
-        </p>
+        {loginMsgShow ? <Row><Alert message={errMsg} type="error" /><p>请联系<a href="timline://chat/?topin=qiaoguoqiang">乔国强</a>添加为管理员</p></Row>: ''}
       </form>
     </div>
   )

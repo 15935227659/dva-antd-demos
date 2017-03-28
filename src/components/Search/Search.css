@@ -1,5 +1,5 @@
 .search {
-  display: flex;
+  display: flex !important;
   width: 100%;
   position: relative;
 }

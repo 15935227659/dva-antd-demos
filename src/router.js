@@ -2,7 +2,6 @@ import React, { PropTypes } from 'react'
 import { Router } from 'dva/router'
 import App from './routes/app'
 
-// 注册model
 const cached = {}
 const registerModel = (app, model) => {
   if (!cached[model.namespace]) {
@@ -11,8 +10,7 @@ const registerModel = (app, model) => {
   }
 }
 
-
-const Routers = function({ history, app }) {
+const Routers = function ({ history, app }) {
   const routes = [
     {
       path: '/',
@@ -34,15 +32,6 @@ const Routers = function({ history, app }) {
             }, 'dashboard')
           },
         }, {
-          path: 'menus',
-          name: 'menus',
-          getComponent (nextState, cb) {
-            require.ensure([], require => {
-              registerModel(app, require('./models/menus'))
-              cb(null, require('./routes/menus/'))
-            }, 'menus')
-          }
-        }, {
           path: 'categories',
           name: 'categories',
           getComponent (nextState, cb) {
@@ -50,16 +39,16 @@ const Routers = function({ history, app }) {
               registerModel(app, require('./models/categories'))
               cb(null, require('./routes/categories/'))
             }, 'categories')
-          }
+          },
         }, {
-          path: 'users',
-          name: 'users',
+          path: 'menus',
+          name: 'menus',
           getComponent (nextState, cb) {
             require.ensure([], require => {
-              registerModel(app, require('./models/users'))
-              cb(null, require('./routes/users/'))
-            }, 'categories')
-          }
+              registerModel(app, require('./models/menus'))
+              cb(null, require('./routes/menus/'))
+            }, 'menus')
+          },
         }, {
           path: '*',
           name: 'error',
@@ -69,11 +58,16 @@ const Routers = function({ history, app }) {
             }, 'error')
           },
         },
-      ]
-    }
-  ];
+      ],
+    },
+  ]
 
   return <Router history={history} routes={routes} />
+}
+
+Routers.propTypes = {
+  history: PropTypes.object,
+  app: PropTypes.object,
 }
 
 export default Routers

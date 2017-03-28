@@ -14,33 +14,63 @@ class UserController extends Controller
 
         $env = app()->environment();
 
-        if ($env === 'local') {
+        if (!$this->isAdmin($username)) {
+            // 非管理员不允许登陆
             $response = [
                 'code' => 200,
                 'data' => [
-                    'username' => $username,
-                    'email' => $username . '@jd.com',
-                    'mobile' => '13232323232',
-                    'fullname' => 'xxxx',
-                    'userId' => 992349,
+                    'msg' => '非管理员，禁止登陆',
+                    'status' => 99,
+                ],
+            ];
+        } else if ($env === 'local') {
+            $response = [
+                'code' => 200,
+                'data' => [
+                    'status' => 0,
+                    'msg' => '登陆成功',
+                    'data' => [
+                        'username' => $username,
+                        'email' => $username . '@jd.com',
+                        'mobile' => '13232323232',
+                        'fullname' => 'xxxx',
+                        'userId' => 992349,
+                    ]
                 ]
             ];
         } else {
             $url = env('APP_SSO_URL');
             $result = $this->ssoCurl($url, $username, $password);
-            if ($result['code'] == 0) { // 验证成功
+            if ($result['REQ_CODE'] == 1) {
                 $response = [
                     'code' => 200,
-                    'data' => $result
+                    'data' => [
+                        'status' => 0,
+                        'msg' => $result['REQ_MSG'],
+                        'data' => $result['REQ_DATA']
+                    ],
                 ];
             } else {
                 $response = [
-                    'code' => 401,
-                    'data' => [],
+                    'code' => 200,
+                    'data' => [
+                        'status' => 1,
+                        'msg' => '登陆验证失败'
+                    ],
                 ];
             }
         }
         return response()->json($response, $response['code']);
+    }
+    public function isAdmin($username) {
+        $adminList = env('APP_ADMIN_LIST');
+        $adminList = explode(',', $adminList);
+
+        if(in_array($username, $adminList)) {
+            return true;
+        }
+
+        return false;
     }
 
     public function logout(Request $request) {
@@ -58,7 +88,6 @@ class UserController extends Controller
         }
         $response['status'] = 'failed';
         return response()->json($response, $response['code']);
-
     }
 
     /**

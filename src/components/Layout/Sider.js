@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Icon, Switch } from 'antd'
-import styles from './Layout.css'
+import styles from './Layout.less'
 import { config } from '../../utils'
 import Menus from './Menu'
 

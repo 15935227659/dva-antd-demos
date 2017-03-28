@@ -1,27 +1,21 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'dva'
-import { classnames } from '../utils'
-import { Header, Bread, Footer, Sider, styles } from '../components/Layout'
-import { Spin } from 'antd'
-import 'antd/dist/antd.css'
-import '../components/skin.css'
 import Login from './login'
+import { Layout } from '../components'
+import { Spin } from 'antd'
+import { classnames } from '../utils'
+import 'antd/dist/antd.css'
+import '../components/skin.less'
 
-function App({ children, location, dispatch, app, loading }) {
-  const {
-    login,
-    loginButtonLoading,
-    user,
-    siderFold,
-    darkTheme,
-    isNavbar,
-    menuPopoverVisible,
-    navOpenKeys
-  } = app
+const { Header, Bread, Footer, Sider, styles } = Layout
 
+function App ({ children, location, dispatch, app, loading }) {
+  const { login, loginButtonLoading, user, siderFold, darkTheme, isNavbar, menuPopoverVisible, navOpenKeys, loginMsgShow, errMsg } = app
   const loginProps = {
     loading,
     loginButtonLoading,
+    loginMsgShow,
+    errMsg,
     onOk (data) {
       dispatch({ type: 'app/login', payload: data })
     },
@@ -35,7 +29,7 @@ function App({ children, location, dispatch, app, loading }) {
     menuPopoverVisible,
     navOpenKeys,
     switchMenuPopover () {
-      dispatch({ type: 'app/switchMenuPopover' })
+      dispatch({ type: 'app/switchMenuPopver' })
     },
     logout () {
       dispatch({ type: 'app/logout' })
@@ -65,7 +59,7 @@ function App({ children, location, dispatch, app, loading }) {
 
   return (
     <div>{login
-      ? <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
+        ? <div className={classnames(styles.layout, { [styles.fold]: isNavbar ? false : siderFold }, { [styles.withnavbar]: isNavbar })}>
           {!isNavbar ? <aside className={classnames(styles.sider, { [styles.light]: !darkTheme })}>
             <Sider {...siderProps} />
           </aside> : ''}
@@ -80,8 +74,7 @@ function App({ children, location, dispatch, app, loading }) {
             <Footer />
           </div>
         </div>
-      : <div className={styles.spin}><Spin tip="加载用户信息..." spinning={loading} size="large"><Login {...loginProps} /></Spin></div>
-    }</div>
+        : <div className={styles.spin}><Spin tip="加载用户信息..." spinning={loading} size="large"><Login {...loginProps} /></Spin></div>}</div>
   )
 }
 
