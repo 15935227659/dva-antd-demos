@@ -12,15 +12,34 @@ class UserController extends Controller
         $username = $request->input('username');
         $password = $request->input('password');
 
-        $response = [
-            'code' => 200,
-            'status' => 'success',
-        ];
-        if ($username == 'qiaoguoqiang' && $password == '123456') {
-            $response['data'] = [ 'username' => $username ];
-            return response()->json($response, $response['code']);
+        $env = app()->environment();
+
+        if ($env === 'local') {
+            $response = [
+                'code' => 200,
+                'data' => [
+                    'username' => $username,
+                    'email' => $username . '@jd.com',
+                    'mobile' => '13232323232',
+                    'fullname' => 'xxxx',
+                    'userId' => 992349,
+                ]
+            ];
+        } else {
+            $url = env('APP_SSO_URL');
+            $result = $this->ssoCurl($url, $username, $password);
+            if ($result['code'] == 0) { // 验证成功
+                $response = [
+                    'code' => 200,
+                    'data' => $result
+                ];
+            } else {
+                $response = [
+                    'code' => 401,
+                    'data' => [],
+                ];
+            }
         }
-        $response['status'] = 'failed';
         return response()->json($response, $response['code']);
     }
 
@@ -40,5 +59,31 @@ class UserController extends Controller
         $response['status'] = 'failed';
         return response()->json($response, $response['code']);
 
+    }
+
+    /**
+     * @desc HTTP方式的登陆验证
+     */
+    protected function ssoCurl($url, $username, $password) {
+        $password = md5($password);
+        $url = $url . '?username=' . $username . '&password=' . $password;
+        try {
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_HEADER, 0);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
+            $return = curl_exec($ch);
+            curl_close($ch);
+            $result = json_decode($return, true);
+        } catch (Exception $e) { // 异常
+            $result = array(
+                'REQ_CODE' => 9999,
+                'REQ_DATA' => array(),
+                'REQ_FLAG' => 1,
+                'REQ_MSG' => $e->getMessage()
+            );
+        }
+        return $result;
     }
 }

@@ -1,10 +1,11 @@
 import * as mainService from '../services/app';
 import { parse } from 'qs';
+const Cookie = require('js-cookie')
 
 export default {
   namespace: 'app',
   state: {
-    login: true, // 登录状态标志
+    login: false, // 登录状态标志
     user: { // 登录用户信息
       name: '',
     },
@@ -28,8 +29,14 @@ export default {
       payload,
     }, { call, put }) {
       yield put({ type: 'showLoginButtonLoading' })
-      const data = yield call(mainService.login, parse(payload))
-      if (data.success) {
+      const { data, headers } = yield call(mainService.login, parse(payload))
+      if (data.code === 200) {
+        // 登陆成功，写cookie, 这里不太安全，后续扩展
+        const now = new Date()
+        now.setDate(now.getDate() + 1)
+        Cookie.set('user_session', now.getTime(), { path: '/' })
+        Cookie.set('user_name', payload.username, { path: '/' })
+
         yield put({
           type: 'loginSuccess',
           payload: {
@@ -47,13 +54,15 @@ export default {
     *queryUser ({
       payload,
     }, { call, put }) {
-      const data = yield call(mainService.userInfo, parse(payload))
-      if (data.success) {
+      // const data = yield call(mainService.userInfo, parse(payload))
+      //if (data.success) {
+      // 这里改成同步处理，检查cookie, 待重构
+      if ( Cookie.get('user_session') && Cookie.get('user_session') > (new Date).getTime() ) {
         yield put({
           type: 'loginSuccess',
           payload: {
             user: {
-              name: data.username,
+              name: Cookie.get('user_name'),
             },
           },
         })
@@ -62,12 +71,12 @@ export default {
     *logout ({
       payload,
     }, { call, put }) {
-      const data = yield call(mainService.logout, parse(payload))
-      if (data.success) {
-        yield put({
-          type: 'logoutSuccess',
-        })
-      }
+      //const data = yield call(mainService.logout, parse(payload))
+      Cookie.remove('user_session', { path: '/' })
+      Cookie.remove('user_name', { path: '/' })
+      yield put({
+        type: 'logoutSuccess',
+      })
     },
     *switchSider ({
       payload,

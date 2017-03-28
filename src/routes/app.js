@@ -2,8 +2,10 @@ import React, { PropTypes } from 'react'
 import { connect } from 'dva'
 import { classnames } from '../utils'
 import { Header, Bread, Footer, Sider, styles } from '../components/Layout'
+import { Spin } from 'antd'
 import 'antd/dist/antd.css'
 import '../components/skin.css'
+import Login from './login'
 
 function App({ children, location, dispatch, app, loading }) {
   const {
@@ -16,6 +18,14 @@ function App({ children, location, dispatch, app, loading }) {
     menuPopoverVisible,
     navOpenKeys
   } = app
+
+  const loginProps = {
+    loading,
+    loginButtonLoading,
+    onOk (data) {
+      dispatch({ type: 'app/login', payload: data })
+    },
+  }
 
   const headerProps = {
     user,
@@ -70,9 +80,7 @@ function App({ children, location, dispatch, app, loading }) {
             <Footer />
           </div>
         </div>
-      : <div>
-        Not Login
-        </div>
+      : <div className={styles.spin}><Spin tip="加载用户信息..." spinning={loading} size="large"><Login {...loginProps} /></Spin></div>
     }</div>
   )
 }
