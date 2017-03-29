@@ -1,6 +1,6 @@
 {
   "entry": "src/index.js",
-  "publicPath": "/dist/",
+  "publicPath": "/console-ct/",
   "env": {
     "development": {
       "extraBabelPlugins": [
