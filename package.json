@@ -5,9 +5,8 @@
     "build": "roadhog build",
     "build-debug": "roadhog build --debug",
     "lint": "eslint --ext .js src test",
-    "precommit": "npm run lint",
     "mock": "json-server --watch mock/db.js --port 3004",
-    "syncapi": "sh ./sync_api.sh qiaoguoqiang ./lumen_api/ qiaoguoqiang@192.168.200.30:/home/qiaoguoqiang/work/jdsopr/lumen_api/"
+    "syncapi": "sh ./sync_api.sh qiao@123 ./lumen_api/ qiaoguoqiang@192.168.200.30:/home/qiaoguoqiang/work/jdsopr/lumen_api/"
   },
   "engines": {
     "install-node": "6.9.2"

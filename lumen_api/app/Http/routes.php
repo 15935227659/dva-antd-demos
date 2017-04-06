@@ -50,4 +50,6 @@ $api->version('v1', function ($api) {
     $api->post('login', 'App\\Http\\Controllers\\UserController@login');
     $api->post('logout', 'App\\Http\\Controllers\\UserController@logout');
     $api->get('userInfo', 'App\\Http\\Controllers\\UserController@info');
+    $api->get('reportData', 'App\\Http\\Controllers\\ReportController@quotes');
+    $api->get('reportMeta', 'App\\Http\\Controllers\\ReportController@metas');
 });
