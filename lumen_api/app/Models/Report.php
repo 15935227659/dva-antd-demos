@@ -34,6 +34,7 @@ final class Report extends Model
 
         $newRes = [];
         foreach($result as $row) {
+            $row->key = strtotime($row->dt);
             $newRes[$row->dt] = $row;
         }
         $result = array();
@@ -43,6 +44,7 @@ final class Report extends Model
             if(!isset($newRes[$theDay])) {
                 $row = new \stdClass();
                 $row->dt = $theDay;
+                $row->key = $et;
                 $result[] = $row;
             } else {
                 $result[] = $newRes[$theDay];
@@ -51,25 +53,3 @@ final class Report extends Model
         return $result;
     }
 }
-
-/**
-        if(sizeof($result) !== $days) { // 日期范围缺失数据补齐
-            $new = [];
-            foreach($result as $row) {
-                $new[$row['dt']] = $row;
-            }
-
-            $result = [];
-            for($et = strtotime($end), $st = strtotime($start); $et <= $st; $et = $et - 86400) {
-                if(!isset($new[date('Y-m-d', $et)]) {
-                    $result[] = [
-                        'dt' => date('Y-m-d', $et),
-                    ];
-                } else {
-                    $result[] = $new[date('Y-m-d', $et)];
-                }
-            }
-        }
-
-        print_r($result);exit();
-*/
