@@ -1,5 +1,6 @@
 import * as servs from '../services/reports'
 import { parse } from 'qs'
+const Cookie = require('js-cookie')
 
 export default {
   namespace: 'reports',
@@ -39,7 +40,7 @@ export default {
       yield put({
         type: 'hideModal',
       })
-      const { data, headers } = yield call(servs.create, payload)
+      const { data, headers } = yield call(servs.create, {...payload, username: Cookie.get('user_name')})
       yield put({ type: 'reload' });
     },
     *update ({ payload }, { select, call, put }) {

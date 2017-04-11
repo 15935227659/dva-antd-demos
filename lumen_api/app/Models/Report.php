@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 final class Report extends Model
 {
     use BaseModelTrait;
+    protected $fillable = [
+        'name', 'alias', 'description', 'creator',
+        'group_id', 'db_id', 'table_name',
+        'table_type', 'dims', 'quotes',
+    ];
 
     public static function search(Request $request)
     {

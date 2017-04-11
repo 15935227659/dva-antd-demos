@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use Illuminate\Http\Request;
+use Pinyin;
 
 class ReportController extends Controller
 {
@@ -26,7 +27,71 @@ class ReportController extends Controller
     public function store(Request $request)
     {
         $m = self::MODEL;
-        print_r($request->all());exit();
+
+        $rDims = $request->input('dims') ?? [];
+        $rQuotes = $request->input('quotes') ?? [];
+
+        $dims = [];
+        $quotes = [];
+
+        $dataTypes = [
+            'int' => self::T_INT,
+            'double' => self::T_DOUBLE,
+            'percentage' => self::T_PERCENTAGE,
+        ];
+        if(sizeof($rQuotes)) {
+            foreach($rQuotes as $index) {
+                $qItem = [
+                    'name' => $request->input('quotes-name-' . $index),
+                    'desc' => $request->input('quotes-desc-' . $index),
+                    'value' => $request->input('quotes-field-' . $index),
+                    'data_type' => $dataTypes[$request->input('quotes-type-' . $index)],
+                ];
+                $group = $request->input('quotes-group-' . $index);
+
+                $quotes[$group][] = $qItem;
+            }
+        }
+
+        if(sizeof($rDims)) {
+            foreach($rDims as $dIndex) {
+                $alias = $request->input('dims-alias-' . $dIndex);
+
+                $dims[$alias] = [
+                    'alias' => $alias,
+                    'name' => $request->input('dims-name-' . $dIndex),
+                    'value' => $request->input('dims-value-' . $dIndex),
+                    'vtype' => $request->input('dims-vtype-' . $dIndex),
+                    'inputtype' => $request->input('dims-inputtype-' . $dIndex),
+                ];
+            }
+        }
+
+        $newQuotes = [];
+        foreach($quotes as $group => $children) {
+            $newQuotes[] = [
+                'name' => $group,
+                'desc' => $group,
+                'value' => Pinyin::getPinyin($group),
+                'child' => $children,
+            ];
+        }
+
+        $record = [
+            'name' => $request->input('report_name'),
+            'alias' => $request->input('alias') ?? '',
+            'description' => $request->input('report_desc'),
+            'creator' => $request->input('username') ?? '',
+            'group_id' => $request->input('group_id') ?? 0,
+            'db_id' => $request->input('db_id') ?? 1,
+            'table_name' => $request->input('report_table') ?? '',
+            'table_type' => $request->input('table_type') ?? 'none',
+            'dims' => json_encode($dims),
+            'quotes' => json_encode($newQuotes),
+        ];
+
+        $data = $m::create($record);
+        return $this->createdResponse($data);
     }
 
     /**
