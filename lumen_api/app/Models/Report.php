@@ -13,7 +13,7 @@ final class Report extends Model
         'table_type', 'dims', 'quotes',
     ];
 
-    public static function search(Request $request)
+    public static function datas(Request $request)
     {
 
         $result = [];

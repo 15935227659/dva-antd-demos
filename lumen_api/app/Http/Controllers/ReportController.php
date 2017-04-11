@@ -20,7 +20,7 @@ class ReportController extends Controller
     public function quotes(Request $request)
     {
         $m = self::MODEL;
-        return $this->listResponse($m::search($request));
+        return $this->listResponse($m::datas($request));
     }
 
 
