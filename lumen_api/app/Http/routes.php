@@ -46,6 +46,7 @@ $api->version('v1', function ($api) {
     rest($api, 'category');
     rest($api, 'menu');
     rest($api, 'authority');
+    rest($api, 'report');
 
     $api->post('login', 'App\\Http\\Controllers\\UserController@login');
     $api->post('logout', 'App\\Http\\Controllers\\UserController@logout');

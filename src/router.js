@@ -32,6 +32,15 @@ const Routers = function ({ history, app }) {
             }, 'dashboard')
           },
         }, {
+          path: 'reports',
+          name: 'reports',
+          getComponent (nextState, cb) {
+            require.ensure([], require => {
+              registerModel(app, require('./models/reports'))
+              cb(null, require('./routes/reports/'))
+            }, 'reports')
+          },
+        }, {
           path: 'categories',
           name: 'categories',
           getComponent (nextState, cb) {

@@ -16,4 +16,9 @@ module.exports = [
     name: '分类管理',
     icon: 'layout',
   },
+  {
+    key: 'reports',
+    name: '报表管理',
+    icon: 'line-chart',
+  },
 ]
