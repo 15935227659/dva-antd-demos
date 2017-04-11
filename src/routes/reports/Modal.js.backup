@@ -137,11 +137,24 @@ const Modal = ({
 
   getFieldDecorator('dims', { initialValue: [] })
   const dims = getFieldValue('dims')
+  const tips = {
+    name: '有意义的字符串，格式不限',
+    alias: '唯一标志符, 用于标识维度',
+    vtype: '枚举或数据表',
+    value: '值类型为枚举时，请列举所有可能的值, 以英文分号分割多个值;值类型为数据表时，请指定具体的表名',
+    inputtype: '控件显示类型：单选、多选等',
+    group: '分组名称, 留空不分组',
+    desc: '指标描述、定义、解释、公式等字符串',
+    field: '指标对应的字段的名称或字段聚合查询字符串，例如pv, sum(pv)',
+    datatype: '指标数值类型，例如：整数、浮点数、百分比等',
+    precision: '小数或百分比的精度定义',
+  }
   const formItems = dims.map((k, index) => {
     return (
       <tr key={`dim_${k}`}>
         <td>
           <FormItem formItemLayoutWithoutLabel
+            help={getFieldError(`dims-name-${k}`) || tips['name']}
           >
             {getFieldDecorator(`dims-name-${k}`, {
               validateTrigger: ['onChange', 'onBlur'],
@@ -157,6 +170,7 @@ const Modal = ({
         </td>
         <td>
           <FormItem formItemLayoutWithoutLabel
+            help={getFieldError(`dims-alias-${k}`) || tips['alias']}
           >
             {getFieldDecorator(`dims-alias-${k}`, {
               rules: [{
@@ -172,6 +186,7 @@ const Modal = ({
         </td>
         <td>
           <FormItem formItemLayoutWithoutLabel
+            help={getFieldError(`dims-vtype-${k}`) || tips['vtype']}
           >
             {getFieldDecorator(`dims-vtype-${k}`, {
               validateTrigger: ['onChange', 'onBlur'],
@@ -191,6 +206,7 @@ const Modal = ({
         </td>
         <td>
           <FormItem formItemLayoutWithoutLabel
+            help={getFieldError(`dims-value-${k}`) || tips['value']}
           >
             {getFieldDecorator(`dims-value-${k}`, {
               validateTrigger: ['onChange', 'onBlur'],
@@ -206,6 +222,7 @@ const Modal = ({
         </td>
         <td>
           <FormItem formItemLayoutWithoutLabel
+            help={getFieldError(`dims-inputtype-${k}`) || tips['inputtype']}
           >
             {getFieldDecorator(`dims-inputtype-${k}`, {
               initialValue: 'radio',
@@ -245,6 +262,7 @@ const Modal = ({
       <tr key={`quote_${k}`}>
         <td>
           <FormItem formItemLayoutWithoutLabel
+            help={getFieldError(`quotes-name-${k}`) || tips['name']}
           >
             {getFieldDecorator(`quotes-name-${k}`, {
               validateTrigger: ['onChange', 'onBlur'],
@@ -260,14 +278,12 @@ const Modal = ({
         </td>
         <td>
           <FormItem formItemLayoutWithoutLabel
+            help={getFieldError(`quotes-group-${k}`) || tips['group']}
           >
             {getFieldDecorator(`quotes-group-${k}`, {
-              initialValue: 'default',
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
-                required: true,
-                whitespace: true,
-                message: '请输入分组名称',
+                required: false,
               }],
             })(
               <Input placeholder="分组名称" />
@@ -276,6 +292,7 @@ const Modal = ({
         </td>
         <td>
           <FormItem formItemLayoutWithoutLabel
+            help={getFieldError(`quotes-desc-${k}`) || tips['desc']}
           >
             {getFieldDecorator(`quotes-desc-${k}`, {
               validateTrigger: ['onChange', 'onBlur'],
@@ -291,6 +308,7 @@ const Modal = ({
         </td>
         <td>
           <FormItem formItemLayoutWithoutLabel
+            help={getFieldError(`quotes-field-${k}`) || tips['field']}
           >
             {getFieldDecorator(`quotes-field-${k}`, {
               validateTrigger: ['onChange', 'onBlur'],
@@ -306,6 +324,7 @@ const Modal = ({
         </td>
         <td>
           <FormItem formItemLayoutWithoutLabel
+            help={getFieldError(`quotes-type-${k}`) || tips['datatype']}
           >
             {getFieldDecorator(`quotes-type-${k}`, {
               validateTrigger: ['onChange', 'onBlur'],
@@ -326,6 +345,7 @@ const Modal = ({
         </td>
         <td>
           <FormItem formItemLayoutWithoutLabel
+            help={getFieldError(`quotes-precision-${k}`) || tips['precision']}
           >
             {getFieldDecorator(`quotes-precision-${k}`, {
               validateTrigger: ['onChange', 'onBlur'],
@@ -472,7 +492,7 @@ const Modal = ({
                       <ul>
                         <li>指标配置定义报表展示指标的元数据信息，包括指标数据如何获取，指标数据展示类型，小数点精度等。指标配置项目必须配置。</li>
                         <li>指标名称：采用汉语、英文单词、下划线等组合起来的字符串，表示指标含义的简短描述字符串。</li>
-                        <li>分组名称：对大量指标进行的简单分类。使用简单词语， 如果不设置分组，输入default。分组名称相同的在报表展示时处于同一组中。</li>
+                        <li>分组名称：对大量指标进行的简单分类。使用简单词语， 如果不设置分组，留空。分组名称相同的在报表展示时处于同一组中。</li>
                         <li>指标描述：指标含义、指标计算方式、计算口径等详细指标信息介绍。作为指标名称的详细解释， 给数据使用者一种明确定义。</li>
                         <li>字段名称：指标数据在展示时从具体数据源中取值的逻辑，一般使用对应表中的字段；有时候也使用一些SQL聚合语句，比如SUM(field1) as field1。</li>
                         <li>数值类型：指标数值在趋势图或数据表中展示时格式化的类型，目前系统支持的类型有：整数、小数和百分比。</li>
