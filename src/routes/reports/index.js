@@ -4,6 +4,7 @@ import { connect } from 'dva'
 
 import Filter from './Filter'
 import Modal from './Modal'
+import List from './List'
 
 function Reports({
   location,
@@ -55,10 +56,51 @@ function Reports({
     },
   }
 
+  // 列表属性
+  const listProps = {
+    dataSource: list,
+    loading,
+    pagination,
+    location,
+    isMotion,
+    onPageChange (page) {
+      const { query, pathname } = location
+      dispatch(routerRedux.push({
+        pathname,
+        query: {
+          ...query,
+          page: page.current,
+          limit: page.pageSize,
+        }
+      }))
+    },
+    onDeleteItem (id) {
+      dispatch({
+        type: 'reports/delete',
+        payload: id,
+      })
+    },
+    onEditItem (item) {
+      dispatch({
+        type: 'reports/showModal',
+        payload: {
+          modalType: 'update',
+          currentItem: item,
+        }
+      })
+    },
+    onCancel() {
+      dispatch({
+        type: 'menus/hideModal'
+      })
+    }
+  }
+
+
   return (
     <div>
       <Filter {...filterProps} />
-      <div>报表列表</div>
+      <List {...listProps} />
       <Modal {...modalProps} />
     </div>
   )

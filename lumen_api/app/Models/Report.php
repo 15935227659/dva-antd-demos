@@ -13,6 +13,24 @@ final class Report extends Model
         'table_type', 'dims', 'quotes',
     ];
 
+    public static function search(Request $request)
+    {
+        $pagesize = $request->input('limit') ?? 10;
+        $field = $request->input('field');
+        $keyword = $request->input('keyword');
+
+        // security check here
+
+
+        $result = app('db')->table('reports');
+        if($field && $keyword) {
+            $result =  $result->where('menus.' . $field, 'like', '%' . $keyword . '%');
+        }
+        $result = $result->paginate($pagesize);
+
+        return $result;
+    }
+
     public static function datas(Request $request)
     {
 

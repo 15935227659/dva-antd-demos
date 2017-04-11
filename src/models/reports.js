@@ -19,6 +19,16 @@ export default {
     },
   },
   subscriptions: {
+    setup ({ dispatch, history }) {
+      history.listen(location => {
+        if (location.pathname === '/reports') {
+          dispatch({
+            type: 'query',
+            payload: location.query,
+          })
+        }
+      })
+    },
   },
   effects: {
     *query ({ payload }, { call, put }) {
@@ -26,12 +36,11 @@ export default {
       yield put({
         type: 'querySuccess',
         payload: {
-          list: data['data']['reports']['data'],
-          categories: data['data']['categories'],
-          total: data['data']['reports'].total,
+          list: data['data']['data'],
+          total: data['data'].total,
           pagination: {
-            current: data['data']['reports'].current_page,
-            total: data['data']['reports'].total,
+            current: data['data'].current_page,
+            total: data['data'].total,
           }
         },
       });
