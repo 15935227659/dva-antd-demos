@@ -16,6 +16,8 @@ function Reports({
     list,
     pagination,
     currentItem,
+    curQuotes,
+    curDims,
     modalVisible,
     modalType,
     isMotion,
@@ -29,6 +31,8 @@ function Reports({
         type: 'reports/showModal',
         payload: {
           modalType: 'create',
+          curQuotes: [],
+          curDims: [],
         }
       })
     },
@@ -42,6 +46,8 @@ function Reports({
   const modalProps = {
     item: modalType === 'create' ? {} : currentItem,
     type: modalType,
+    curQuotes,
+    curDims,
     visible: modalVisible,
     onOk(data) {
       dispatch({
@@ -52,6 +58,47 @@ function Reports({
     onCancel() {
       dispatch({
         type: 'reports/hideModal',
+      })
+    },
+    addDim() {
+      dispatch({
+        type: 'reports/addDim',
+        payload: {
+          name: '',
+          alias: '',
+          vtype: 'enum',
+          value: '',
+          inputtype: 'radio',
+        },
+      })
+    },
+    removeDim(index) {
+      dispatch({
+        type: 'reports/removeDim',
+        payload: {
+          index,
+        },
+      })
+    },
+    addQuote() {
+      dispatch({
+        type: 'reports/addQuote',
+        payload: {
+          name: '',
+          desc: '',
+          group: '',
+          data_type: 'int',
+          field: '',
+          precision: 0,
+        },
+      })
+    },
+    removeQuote(index) {
+      dispatch({
+        type: 'reports/removeQuote',
+        payload: {
+          index,
+        },
       })
     },
   }
@@ -86,6 +133,8 @@ function Reports({
         payload: {
           modalType: 'update',
           currentItem: item,
+          curQuotes: JSON.parse(item.quotes),
+          curDims: JSON.parse(item.dims),
         }
       })
     },

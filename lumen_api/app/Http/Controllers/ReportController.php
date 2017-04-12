@@ -34,30 +34,26 @@ class ReportController extends Controller
         $dims = [];
         $quotes = [];
 
-        $dataTypes = [
-            'int' => self::T_INT,
-            'double' => self::T_DOUBLE,
-            'percentage' => self::T_PERCENTAGE,
-        ];
         if(sizeof($rQuotes)) {
             foreach($rQuotes as $index) {
+                $group = $request->input('quotes-group-' . $index);
                 $qItem = [
                     'name' => $request->input('quotes-name-' . $index),
                     'desc' => $request->input('quotes-desc-' . $index),
-                    'value' => $request->input('quotes-field-' . $index),
-                    'data_type' => $dataTypes[$request->input('quotes-type-' . $index)],
+                    'field' => $request->input('quotes-field-' . $index),
+                    'data_type' => $request->input('quotes-type-' . $index),
+                    'group' => $group,
+                    'precision' => $request->input('quotes-precision-' . $index),
                 ];
-                $group = $request->input('quotes-group-' . $index);
 
-                $quotes[$group][] = $qItem;
+                $quotes[] = $qItem;
             }
         }
 
         if(sizeof($rDims)) {
             foreach($rDims as $dIndex) {
                 $alias = $request->input('dims-alias-' . $dIndex);
-
-                $dims[$alias] = [
+                $dims[] = [
                     'alias' => $alias,
                     'name' => $request->input('dims-name-' . $dIndex),
                     'value' => $request->input('dims-value-' . $dIndex),
@@ -67,31 +63,85 @@ class ReportController extends Controller
             }
         }
 
-        $newQuotes = [];
-        foreach($quotes as $group => $children) {
-            $newQuotes[] = [
-                'name' => $group,
-                'desc' => $group,
-                'value' => Pinyin::getPinyin($group),
-                'child' => $children,
-            ];
-        }
-
         $record = [
-            'name' => $request->input('report_name'),
+            'name' => $request->input('name'),
             'alias' => $request->input('alias') ?? '',
-            'description' => $request->input('report_desc'),
+            'description' => $request->input('description'),
             'creator' => $request->input('username') ?? '',
             'group_id' => $request->input('group_id') ?? 0,
             'db_id' => $request->input('db_id') ?? 1,
-            'table_name' => $request->input('report_table') ?? '',
+            'table_name' => $request->input('table_name') ?? '',
             'table_type' => $request->input('table_type') ?? 'none',
             'dims' => json_encode($dims),
-            'quotes' => json_encode($newQuotes),
+            'quotes' => json_encode($quotes),
         ];
 
         $data = $m::create($record);
         return $this->createdResponse($data);
+    }
+
+    /**
+     * @desc 更新保存
+     */
+    public function update($id, Request $request)
+    {
+        $m = self::MODEL;
+        if(!$data = $m::find($id))
+        {
+            return $this->notFoundResponse();
+        }
+
+        $rDims = $request->input('dims') ?? [];
+        $rQuotes = $request->input('quotes') ?? [];
+
+        $dims = [];
+        $quotes = [];
+
+        if(sizeof($rQuotes)) {
+            foreach($rQuotes as $index) {
+                $group = $request->input('quotes-group-' . $index);
+                $qItem = [
+                    'name' => $request->input('quotes-name-' . $index),
+                    'desc' => $request->input('quotes-desc-' . $index),
+                    'field' => $request->input('quotes-field-' . $index),
+                    'data_type' => $request->input('quotes-type-' . $index),
+                    'group' => $group,
+                    'precision' => $request->input('quotes-precision-' . $index),
+                ];
+
+                $quotes[] = $qItem;
+            }
+        }
+
+        if(sizeof($rDims)) {
+            foreach($rDims as $dIndex) {
+                $alias = $request->input('dims-alias-' . $dIndex);
+
+                $dims[] = [
+                    'alias' => $alias,
+                    'name' => $request->input('dims-name-' . $dIndex),
+                    'value' => $request->input('dims-value-' . $dIndex),
+                    'vtype' => $request->input('dims-vtype-' . $dIndex),
+                    'inputtype' => $request->input('dims-inputtype-' . $dIndex),
+                ];
+            }
+        }
+
+        $record = [
+            'name' => $request->input('name'),
+            'alias' => $request->input('alias') ?? '',
+            'description' => $request->input('description'),
+            'group_id' => $request->input('group_id') ?? 0,
+            'db_id' => $request->input('db_id') ?? 1,
+            'table_name' => $request->input('table_name') ?? '',
+            'table_type' => $request->input('table_type') ?? 'none',
+            'dims' => json_encode($dims),
+            'quotes' => json_encode($quotes),
+        ];
+
+        $data->fill($record);
+        $data->save();
+        return $this->showResponse($data);
     }
 
     /**

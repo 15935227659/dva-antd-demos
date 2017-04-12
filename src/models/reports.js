@@ -7,6 +7,8 @@ export default {
   state: {
     list: [],
     currentItem: {},
+    curQuotes: [],
+    curDims: [],
     modalVisible: false,
     modalType: 'create',
     isMotion: localStorage.getItem('idataUserIsMotion') === 'true',
@@ -53,15 +55,15 @@ export default {
       yield put({ type: 'reload' });
     },
     *update ({ payload }, { select, call, put }) {
-      yield put({
-        type: 'hideModal',
-      })
-
-      const { data, headers } = yield call(servs.create, payload)
-
-      yield put({
-        type: 'reload',
-      })
+      yield put({ type: 'hideModal' })
+      const id = yield select(({ reports }) => reports.currentItem.id)
+      const newItem = { ...payload, id }
+      const { data, headers } = yield call(servs.update, newItem)
+      yield put({ type: 'reload' });
+    },
+    *'delete' ({ payload }, { call, put }) {
+      const data = yield call(servs.remove, payload)
+      yield put({ type: 'reload' })
     },
     *reload (action, { put, select }) {
       const pagination = yield select(state => {
@@ -97,6 +99,38 @@ export default {
         ...state,
         ...action.payload,
         modalVisible: false,
+      }
+    },
+    addDim(state, action) {
+      let { curDims } = state
+      curDims = curDims.concat(action.payload)
+      return {
+        ...state,
+        curDims,
+      }
+    },
+    removeDim(state, action) {
+      let { curDims } = state
+      curDims.splice(action.payload.index, 1)
+      return {
+        ...state,
+        curDims,
+      }
+    },
+    addQuote(state, action) {
+      let { curQuotes } = state
+      curQuotes = curQuotes.concat(action.payload)
+      return {
+        ...state,
+        curQuotes,
+      }
+    },
+    removeQuote(state, action) {
+      let { curQuotes } = state
+      curQuotes.splice(action.payload.index, 1)
+      return {
+        ...state,
+        curQuotes,
       }
     },
   }

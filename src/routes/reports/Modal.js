@@ -11,6 +11,7 @@ import {
   Row,
   Col,
 } from 'antd'
+import _ from 'lodash'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
@@ -38,14 +39,18 @@ const formItemLayoutWithoutLabel = {
   }
 }
 
-let uuid = 0
-let uuid2 = 0
 const Modal = ({
   visible,
   type,
   item = {},
   onOk,
   onCancel,
+  addQuote,
+  removeQuote,
+  addDim,
+  removeDim,
+  curQuotes,
+  curDims,
   form: {
     getFieldDecorator,
     validateFields,
@@ -55,6 +60,9 @@ const Modal = ({
     getFieldError,
   },
 }) => {
+  let dimKeys = _.range(0, curDims.length)
+  let quoteKeys = _.range(0, curQuotes.length)
+
   const handleOk = () => {
     validateFields((errors) => {
       if (errors) {
@@ -81,50 +89,6 @@ const Modal = ({
   }
 
 
-  const removeDim = (dim) => {
-    const dims = getFieldValue('dims')
-    if (dims.length === 1) {
-      return
-    }
-
-    setFieldsValue({
-      dims: dims.filter(item => item !== dim)
-    })
-  }
-
-  const addDim = () => {
-    uuid++
-
-    const dims = getFieldValue('dims')
-    const nextDims = dims.concat(uuid)
-
-    setFieldsValue({
-      dims: nextDims,
-    })
-  }
-
-  const removeQuote = (quote) => {
-    const quotes = getFieldValue('quotes')
-    if (quotes.length === 1) {
-      return
-    }
-
-    setFieldsValue({
-      quotes: quotes.filter(item => item !== quote)
-    })
-  }
-
-  const addQuote = () => {
-    uuid2++
-
-    const quotes = getFieldValue('quotes')
-    const nextQuotes = quotes.concat(uuid2)
-
-    setFieldsValue({
-      quotes: nextQuotes,
-    })
-  }
-
   const modalOpts = {
     title: `${type === 'create' ? '新建报表' : '修改报表'}`,
     visible,
@@ -134,16 +98,15 @@ const Modal = ({
     width: 1000,
   }
 
-
-  getFieldDecorator('dims', { initialValue: [] })
-  const dims = getFieldValue('dims')
-  const formItems = dims.map((k, index) => {
+  getFieldDecorator('dims', { initialValue: dimKeys })
+  const formItems = curDims.map((dim, k) => {
     return (
       <tr key={`dim_${k}`}>
         <td>
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`dims-name-${k}`, {
+              initialValue: dim['name'],
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -159,6 +122,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`dims-alias-${k}`, {
+              initialValue: dim['alias'],
               rules: [{
                 required: true,
                 whitespace: true,
@@ -174,6 +138,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`dims-vtype-${k}`, {
+              initialValue: dim['vtype'] || 'enum',
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -193,6 +158,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`dims-value-${k}`, {
+              initialValue: dim['value'],
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -208,7 +174,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`dims-inputtype-${k}`, {
-              initialValue: 'radio',
+              initialValue: dim['inputtype'] || 'radio',
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -228,7 +194,6 @@ const Modal = ({
               onClick={() => removeDim(k)}>
             <Icon
               type="close"
-              disabled={dims.length === 1}
             />
             删除
           </Button>
@@ -238,15 +203,15 @@ const Modal = ({
   })
 
 
-  getFieldDecorator('quotes', { initialValue: [] })
-  const quotes = getFieldValue('quotes')
-  const quoteItems = quotes.map((k, index) => {
+  getFieldDecorator('quotes', { initialValue: quoteKeys })
+  let quoteItems = curQuotes.map((quote, k) => {
     return (
       <tr key={`quote_${k}`}>
         <td>
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`quotes-name-${k}`, {
+              initialValue: quote['name'],
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -262,7 +227,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`quotes-group-${k}`, {
-              initialValue: 'default',
+              initialValue: quote['group'] || 'default',
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -278,6 +243,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`quotes-desc-${k}`, {
+              initialValue: quote['desc'],
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -293,6 +259,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`quotes-field-${k}`, {
+              initialValue: quote['field'],
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -309,7 +276,7 @@ const Modal = ({
           >
             {getFieldDecorator(`quotes-type-${k}`, {
               validateTrigger: ['onChange', 'onBlur'],
-              initialValue: 'int',
+              initialValue: quote['data_type'] || 'int',
               rules: [{
                 required: true,
                 whitespace: true,
@@ -328,6 +295,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`quotes-precision-${k}`, {
+              initialValue: quote['precision'] || 0,
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -344,7 +312,6 @@ const Modal = ({
               onClick={() => removeQuote(k)}>
             <Icon
               type="close"
-              disabled={quotes.length === 1}
             />
             删除
           </Button>
@@ -359,8 +326,8 @@ const Modal = ({
         <Tabs type="card">
           <TabPane tab="基本信息" key="basic">
             <FormItem label="报表名称：" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('report_name', {
-                initialValue: item.report_name,
+              {getFieldDecorator('name', {
+                initialValue: item.name,
                 rules: [
                   {
                     required: true,
@@ -370,8 +337,8 @@ const Modal = ({
               })(<Input />)}
             </FormItem>
             <FormItem label="报表描述：" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('report_desc', {
-                initialValue: item.report_desc,
+              {getFieldDecorator('description', {
+                initialValue: item.description,
                 rules: [
                   {
                     required: true,
@@ -381,8 +348,8 @@ const Modal = ({
               })(<Input type="textarea" rows={4} />)}
             </FormItem>
             <FormItem label="数据表名：" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('report_table', {
-                initialValue: item.report_table,
+              {getFieldDecorator('table_name', {
+                initialValue: item.table_name,
                 rules: [
                   {
                     required: true,
@@ -393,7 +360,7 @@ const Modal = ({
             </FormItem>
             <FormItem label="分表类型：" hasFeedback {...formItemLayout}>
               {getFieldDecorator('table_type', {
-                initialValue: 'month',
+                initialValue: item.table_type || 'none',
               })(
                 <RadioGroup size="small">
                   <RadioButton value="day">按天分</RadioButton>
