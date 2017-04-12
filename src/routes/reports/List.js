@@ -61,8 +61,21 @@ function List ({
       title: '维度信息',
       dataIndex: 'dims',
       key: 'dims',
-      render: (text) => {
-        return <a>查看详细信息</a>
+      render: (text, record) => {
+        let dims = JSON.parse(text)
+        let dimItems = dims.map((dim, index) => {
+          return (
+            <p key={'dim' + index}>
+              <span>名称：{dim.name}</span>
+              <span> | 别名：{dim.alias}</span>
+              <span> | 值类型: {dim.vtype}</span>
+              <span> | 值：{dim.value}</span>
+              <span> | 控件类型：{dim.inputtype}</span>
+            </p>
+          )
+        })
+        // return <a>查看详细信息</a>
+        return dimItems
       }
     },
     {
