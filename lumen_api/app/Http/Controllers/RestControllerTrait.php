@@ -84,7 +84,7 @@ trait RestControllerTrait
     /**
      * @desc 删除
      */
-    public function destroy($id)
+    public function destroy($id, Request $request)
     {
         $m = self::MODEL;
         if(!$data = $m::find($id))

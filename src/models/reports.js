@@ -1,6 +1,7 @@
 import * as servs from '../services/reports'
 import { parse } from 'qs'
 const Cookie = require('js-cookie')
+import pinyin from 'js-pinyin'
 
 export default {
   namespace: 'reports',
@@ -51,18 +52,26 @@ export default {
       yield put({
         type: 'hideModal',
       })
-      const { data, headers } = yield call(servs.create, {...payload, username: Cookie.get('user_name')})
-      yield put({ type: 'reload' });
+      const { data, headers } = yield call(servs.create, {
+        ...payload,
+        username: Cookie.get('user_name'),
+        alias: pinyin.getFullChars(payload.name)
+      })
+      yield put({ type: 'reload' })
     },
     *update ({ payload }, { select, call, put }) {
       yield put({ type: 'hideModal' })
       const id = yield select(({ reports }) => reports.currentItem.id)
-      const newItem = { ...payload, id }
+      const newItem = {
+        ...payload,
+        id,
+        alias: pinyin.getFullChars(payload.name),
+      }
       const { data, headers } = yield call(servs.update, newItem)
-      yield put({ type: 'reload' });
+      yield put({ type: 'reload' })
     },
     *'delete' ({ payload }, { call, put }) {
-      const data = yield call(servs.remove, payload)
+      const { data, headers } = yield call(servs.remove, payload)
       yield put({ type: 'reload' })
     },
     *reload (action, { put, select }) {
@@ -72,20 +81,21 @@ export default {
 
       yield put({
         type: 'query',
-        payload: {}
+        payload: {},
+        currentItem: {},
       })
     }
   },
   reducers: {
     querySuccess (state, action) {
-      const { list, pagination, categories } = action.payload
+      const { list, pagination } = action.payload
       return { ...state,
         list,
-        categories,
         pagination: {
           ...state.pagination,
           ...pagination,
-        } }
+        }
+      }
     },
     showModal(state, action) {
       return {
@@ -102,7 +112,7 @@ export default {
       }
     },
     addDim(state, action) {
-      let { curDims } = state
+      let { curDims, currentItem } = state
       curDims = curDims.concat(action.payload)
       return {
         ...state,
@@ -110,7 +120,7 @@ export default {
       }
     },
     removeDim(state, action) {
-      let { curDims } = state
+      let { curDims, currentItem } = state
       curDims.splice(action.payload.index, 1)
       return {
         ...state,

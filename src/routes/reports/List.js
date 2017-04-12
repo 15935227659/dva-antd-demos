@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
-import { Table, Modal, Popconfirm } from 'antd'
-import styles from './List.css'
+import { Table, Modal, Popconfirm, Button } from 'antd'
+import styles from './List.less'
 import classnames from 'classnames'
 import AnimTableBody from '../../components/DataTable/AnimTableBody'
 import { DropOption } from '../../components'
@@ -15,6 +15,9 @@ function List ({
   onDeleteItem,
   onEditItem,
   isMotion,
+  onDetail,
+  showQuoteDetail,
+  showDimDetail,
   location
 }) {
 
@@ -62,20 +65,46 @@ function List ({
       dataIndex: 'dims',
       key: 'dims',
       render: (text, record) => {
-        let dims = JSON.parse(text)
-        let dimItems = dims.map((dim, index) => {
+        let datas = JSON.parse(text)
+        let trItems = datas.map((data, index) => {
           return (
-            <p key={'dim' + index}>
-              <span>名称：{dim.name}</span>
-              <span> | 别名：{dim.alias}</span>
-              <span> | 值类型: {dim.vtype}</span>
-              <span> | 值：{dim.value}</span>
-              <span> | 控件类型：{dim.inputtype}</span>
-            </p>
+            <tr key={'dim' + index}>
+              <td>{index + 1}</td>
+              <td>{data.name}</td>
+              <td>{data.alias}</td>
+              <td>{data.vtype}</td>
+              <td>{data.value}</td>
+              <td>{data.inputtype}</td>
+            </tr>
           )
         })
-        // return <a>查看详细信息</a>
-        return dimItems
+        return (
+          <div>
+            <a onClick={() => Modal.info({
+              content: (
+                <table className={styles.normaltable}>
+                  <thead>
+                    <tr>
+                      <th>编号</th>
+                      <th>名称</th>
+                      <th>别名</th>
+                      <th>值类型</th>
+                      <th>值</th>
+                      <th>控件类型</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {trItems}
+                  </tbody>
+                </table>
+              ),
+              title: '维度配置详细信息',
+              width: 800,
+              okText: '关闭',
+            })} name="dims">查看详细信息</a>
+          </div>
+        )
+
       }
     },
     {
@@ -83,7 +112,47 @@ function List ({
       dataIndex: 'quotes',
       key: 'quotes',
       render: (text) => {
-        return <a>查看详细信息</a>
+        let datas = JSON.parse(text)
+        let trItems = datas.map((data, index) => {
+          return (
+            <tr key={'quote' + index}>
+              <td>{index + 1}</td>
+              <td>{data.name}</td>
+              <td>{data.group}</td>
+              <td>{data.desc}</td>
+              <td>{data.field}</td>
+              <td>{data.data_type}</td>
+              <td>{data.precision}</td>
+            </tr>
+          )
+        })
+        return (
+          <div>
+            <a onClick={() => Modal.info({
+              content: (
+                <table className={styles.normaltable}>
+                  <thead>
+                    <tr>
+                      <th>编号</th>
+                      <th>名称</th>
+                      <th>组名</th>
+                      <th>描述</th>
+                      <th>字段</th>
+                      <th>数值类型</th>
+                      <th>数值精度</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {trItems}
+                  </tbody>
+                </table>
+              ),
+              title: '指标配置详细信息',
+              width: 800,
+              okText: '关闭',
+            })} name="quotes">查看详细信息</a>
+          </div>
+        )
       }
     },
     {
@@ -91,7 +160,9 @@ function List ({
       key: 'operation',
       render: (text, record) => {
         return <DropOption
-          onMenuClick={e => handleMenuClick(record, e)}
+          onMenuClick={e => {
+            return handleMenuClick(record, e)
+          }}
           menuOptions={[
             { key: '1', name: '编辑' },
             { key: '2', name: '删除' },

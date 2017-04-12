@@ -12,6 +12,7 @@ import {
   Col,
 } from 'antd'
 import _ from 'lodash'
+import pinyin from 'js-pinyin'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane
@@ -320,6 +321,7 @@ const Modal = ({
     )
   })
 
+  console.log(item)
   return (
     <AModal {...modalOpts}>
       <Form layout="horizontal">
@@ -327,22 +329,11 @@ const Modal = ({
           <TabPane tab="基本信息" key="basic">
             <FormItem label="报表名称：" hasFeedback {...formItemLayout}>
               {getFieldDecorator('name', {
-                initialValue: item.name,
+                initialValue: item.name || '',
                 rules: [
                   {
                     required: true,
                     message: '请输入报表名称',
-                  },
-                ],
-              })(<Input />)}
-            </FormItem>
-            <FormItem label="报表别名：" hasFeedback {...formItemLayout}>
-              {getFieldDecorator('alias', {
-                initialValue: item.alias,
-                rules: [
-                  {
-                    required: true,
-                    message: '请输入报表别名',
                   },
                 ],
               })(<Input />)}

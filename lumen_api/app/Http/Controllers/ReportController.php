@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Report;
 use Illuminate\Http\Request;
-use Pinyin;
+use Cutf8Py;
 
 class ReportController extends Controller
 {
@@ -65,7 +65,7 @@ class ReportController extends Controller
 
         $record = [
             'name' => $request->input('name'),
-            'alias' => $request->input('alias') ?? '',
+            'alias' => $request->input('alias'),
             'description' => $request->input('description'),
             'creator' => $request->input('username') ?? '',
             'group_id' => $request->input('group_id') ?? 0,
@@ -129,7 +129,7 @@ class ReportController extends Controller
 
         $record = [
             'name' => $request->input('name'),
-            'alias' => $request->input('alias') ?? '',
+            'alias' => $request->input('alias'),
             'description' => $request->input('description'),
             'group_id' => $request->input('group_id') ?? 0,
             'db_id' => $request->input('db_id') ?? 1,

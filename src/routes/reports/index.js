@@ -31,6 +31,7 @@ function Reports({
         type: 'reports/showModal',
         payload: {
           modalType: 'create',
+          currentItem: {},
           curQuotes: [],
           curDims: [],
         }
@@ -44,7 +45,7 @@ function Reports({
   }
 
   const modalProps = {
-    item: modalType === 'create' ? {} : currentItem,
+    item: currentItem,
     type: modalType,
     curQuotes,
     curDims,
@@ -142,15 +143,15 @@ function Reports({
       dispatch({
         type: 'menus/hideModal'
       })
-    }
+    },
   }
 
-
+  const ModalGen = () => <Modal {...modalProps} />
   return (
     <div>
       <Filter {...filterProps} />
       <List {...listProps} />
-      <Modal {...modalProps} />
+      <ModalGen />
     </div>
   )
 }

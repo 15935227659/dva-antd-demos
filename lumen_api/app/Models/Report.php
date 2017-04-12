@@ -23,9 +23,6 @@ final class Report extends Model
 
 
         $result = app('db')->table('reports');
-        if($field && $keyword) {
-            $result =  $result->where('menus.' . $field, 'like', '%' . $keyword . '%');
-        }
         $result = $result->paginate($pagesize);
 
         return $result;
