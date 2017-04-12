@@ -336,6 +336,17 @@ const Modal = ({
                 ],
               })(<Input />)}
             </FormItem>
+            <FormItem label="报表别名：" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('alias', {
+                initialValue: item.alias,
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入报表别名',
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
             <FormItem label="报表描述：" hasFeedback {...formItemLayout}>
               {getFieldDecorator('description', {
                 initialValue: item.description,
