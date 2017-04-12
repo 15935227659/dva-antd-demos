@@ -3,6 +3,7 @@ import {
   Form,
   Modal as AModal,
   Input,
+  InputNumber,
   Select,
   Radio,
   Tabs,
@@ -40,16 +41,26 @@ const formItemLayoutWithoutLabel = {
   }
 }
 
+/**
+ * @desc 挖坑记录
+ * 1. 新增报表开发的时候，一切都顺利，其中维度、指标计数器能正常工作，新增删除行也都ok
+ * 2. 编辑实现的时候，需要考虑初始化的行数据(维度，指标), 而从父容器传过来的属性(state中的), 计数器始终保持和state中的元素数相同。新增出现问题
+ * 3. 那么不使用计数器，全state管理，新增，删除等功能都ok, 唯一的问题就是点击新增和删除的时候会更新state, 继而更新UI, 编辑页面闪烁(state变化了嘛， 同步到UI)
+ * 4. 绕回来，只能使用计数器。关键是怎么给计数器赋值以及递增。这里使用一个简单的技巧：
+ * 计数器只能增加，不能减少。 为了保证初始化的维度、指标数据的下标保持一致。在增、删过程中，不会让顺序错乱。
+ * 那么情况就变成: 新增的时候index必然是0， 而编辑的时候要根据初始化的数据行来确定，但不能直接通过数据行的length来， 这样就出现2中的问题。
+ * 这里采用从form字段dims, quotes中元素的数量来确定这个初始化值。注意是初始化值， 只执行一次。这里粗暴的判断，是0的话就用元素个数来初始化。(貌似暂时没有什么问题)
+ *
+ * 另外，本想将两个动态form框抽象成单独的组件，暂时鉴于form验证和获取值的问题，暂时没有找到更好的办法。
+ */
+let dimIndex = 0
+let quoteIndex = 0
 const Modal = ({
   visible,
   type,
   item = {},
   onOk,
   onCancel,
-  addQuote,
-  removeQuote,
-  addDim,
-  removeDim,
   curQuotes,
   curDims,
   form: {
@@ -89,6 +100,67 @@ const Modal = ({
     })
   }
 
+  const addDim = () => {
+    const keys = getFieldValue('dims')
+    /**
+     * index的初始化值为0，对于编辑的情况，初始化值需要为项目条目数
+     *
+     * 一旦初始化，保持递增状态
+     */
+    if(dimIndex === 0) {
+      dimIndex = keys.length
+    }
+    const nextKeys = keys.concat(dimIndex)
+    setFieldsValue({
+      dims: nextKeys,
+    })
+
+    dimIndex++
+  }
+  const removeDim = (k) => {
+    const keys = getFieldValue('dims')
+
+    setFieldsValue({
+      dims: keys.filter(key => key !== k)
+    })
+  }
+
+  const addQuote = () => {
+    const keys = getFieldValue('quotes')
+    /**
+     * index的初始化值为0，对于编辑的情况，初始化值需要为项目条目数
+     *
+     * 一旦初始化，保持递增状态
+     */
+    if(quoteIndex === 0) {
+      quoteIndex = keys.length
+    }
+    const nextKeys = keys.concat(quoteIndex)
+    setFieldsValue({
+      quotes: nextKeys,
+    })
+
+    quoteIndex++
+  }
+  const removeQuote = () => {
+    const keys = getFieldValue('quotes')
+
+    setFieldsValue({
+      quotes: keys.filter(key => key !== k)
+    })
+  }
+
+  // 获取dim的初始化值
+  const iDim = (k, field, def) => {
+    if(typeof def === 'undefined') def = ''
+    return curDims[k] ? curDims[k][field] : def
+  }
+
+  // 获取quote的初始化值
+  const iQuote = (k, field, def) => {
+    if(typeof def === 'undefined') def = ''
+    return curQuotes[k] ? curQuotes[k][field] : def
+  }
 
   const modalOpts = {
     title: `${type === 'create' ? '新建报表' : '修改报表'}`,
@@ -100,14 +172,15 @@ const Modal = ({
   }
 
   getFieldDecorator('dims', { initialValue: dimKeys })
-  const formItems = curDims.map((dim, k) => {
+  dimKeys = getFieldValue('dims')
+  const formItems = dimKeys.map((k) => {
     return (
       <tr key={`dim_${k}`}>
         <td>
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`dims-name-${k}`, {
-              initialValue: dim['name'],
+              initialValue: iDim(k, 'name'),
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -123,7 +196,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`dims-alias-${k}`, {
-              initialValue: dim['alias'],
+              initialValue: iDim(k, 'alias'),
               rules: [{
                 required: true,
                 whitespace: true,
@@ -139,7 +212,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`dims-vtype-${k}`, {
-              initialValue: dim['vtype'] || 'enum',
+              initialValue: iDim(k, 'vtype', 'enum'),
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -159,7 +232,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`dims-value-${k}`, {
-              initialValue: dim['value'],
+              initialValue: iDim(k, 'value'),
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -175,7 +248,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`dims-inputtype-${k}`, {
-              initialValue: dim['inputtype'] || 'radio',
+              initialValue: iDim(k, 'inputtype', 'radio'),
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -205,14 +278,15 @@ const Modal = ({
 
 
   getFieldDecorator('quotes', { initialValue: quoteKeys })
-  let quoteItems = curQuotes.map((quote, k) => {
+  quoteKeys = getFieldValue('quotes')
+  let quoteItems = quoteKeys.map((k) => {
     return (
       <tr key={`quote_${k}`}>
         <td>
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`quotes-name-${k}`, {
-              initialValue: quote['name'],
+              initialValue: iQuote(k, 'name'),
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -228,7 +302,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`quotes-group-${k}`, {
-              initialValue: quote['group'] || 'default',
+              initialValue: iQuote(k, 'group', 'default'),
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -244,7 +318,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`quotes-desc-${k}`, {
-              initialValue: quote['desc'],
+              initialValue: iQuote(k, 'desc'),
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -260,7 +334,7 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`quotes-field-${k}`, {
-              initialValue: quote['field'],
+              initialValue: iQuote(k, 'field'),
               validateTrigger: ['onChange', 'onBlur'],
               rules: [{
                 required: true,
@@ -276,8 +350,8 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`quotes-type-${k}`, {
+              initialValue: iQuote(k, 'data_type', 'int'),
               validateTrigger: ['onChange', 'onBlur'],
-              initialValue: quote['data_type'] || 'int',
               rules: [{
                 required: true,
                 whitespace: true,
@@ -296,15 +370,15 @@ const Modal = ({
           <FormItem formItemLayoutWithoutLabel
           >
             {getFieldDecorator(`quotes-precision-${k}`, {
-              initialValue: quote['precision'] || 0,
-              validateTrigger: ['onChange', 'onBlur'],
+              initialValue: iQuote(k, 'precision', '0'),
+              validateTrigger: ['onChange', 'onBlur',],
               rules: [{
                 required: true,
-                whitespace: true,
+                type: 'number',
                 message: '请输入数值精度',
               }],
             })(
-              <Input placeholder="数值精度" />
+              <InputNumber placeholder="数值精度" min={0} max={9} />
             )}
           </FormItem>
         </td>
@@ -321,7 +395,6 @@ const Modal = ({
     )
   })
 
-  console.log(item)
   return (
     <AModal {...modalOpts}>
       <Form layout="horizontal">

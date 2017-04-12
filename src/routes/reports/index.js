@@ -146,6 +146,9 @@ function Reports({
     },
   }
 
+  /**
+   * 这里需要使用一个Gen函数来处理，否则在编辑和新增的时候，Modal里边的form控件值不会随state同步
+   */
   const ModalGen = () => <Modal {...modalProps} />
   return (
     <div>

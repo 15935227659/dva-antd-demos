@@ -99,11 +99,12 @@ function Categories ({ location, dispatch, categories, loading }) {
     }
   }
 
+  const ModalGen = () => <CategoryModal {...modalProps} />
   return (
     <div className="content-inner">
       <CategoryList {...listProps} />
-      <CategoryModal {...modalProps} />
       <AuthModal {...authModalProps} />
+      <ModalGen />
     </div>
   )
 }
