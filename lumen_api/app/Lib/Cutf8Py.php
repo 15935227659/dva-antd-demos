@@ -44,7 +44,7 @@ class CUtf8Py {
      * @desc GBK中文字符串转拼音
      */
     public static function encodeGBK($gbkData, $sRetFormat='head') {
-        $sGBK = iconv('UTF-8', 'GBK', $utf8Data);
+        $sGBK = iconv('UTF-8', 'GBK', $gbkData);
         return self::encode($sGBK, $sRetFormat);
     }
     /**

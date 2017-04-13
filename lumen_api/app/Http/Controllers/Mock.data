@@ -1,0 +1,99 @@
+/*
+                    [
+                        'name' => '基本',
+                        'desc' => '',
+                        'value' => 'basic',
+                        'child' => [
+                            [
+                                'name' => '全站用户',
+                                'desc' => '全站用户',
+                                'value' => 'count_all_u',
+                                'data_type' => self::T_INT,
+                            ], [
+                                'name' => '产品GMV',
+                                'desc' => '产品GMV',
+                                'value' => 'gmv',
+                                'data_type' => self::T_INT,
+                            ], [
+                                'name' => '活跃用户数',
+                                'desc' => '活跃用户数',
+                                'value' => 'active_u',
+                                'data_type' => self::T_INT,
+                            ], [
+                                'name' => '订单行',
+                                'desc' => '订单行',
+                                'value' => 'count_line',
+                                'data_type' => self::T_INT,
+                            ], [
+                                'name' => 'PV量',
+                                'desc' => 'PV量',
+                                'value' => 'PV',
+                                'data_type' => self::T_INT,
+                            ], [
+                                'name' => '点击量',
+                                'desc' => '点击量',
+                                'value' => 'click_count',
+                                'data_type' => self::T_INT,
+                            ],
+                        ]
+                    ], [
+                        'name' => '转化',
+                        'desc' => '',
+                        'value' => 'rate',
+                        'child' => [
+                            [
+                                'name' => '全站用户价值',
+                                'desc' => '全站用户价值',
+                                'value' => 'value_uv_all',
+                                'data_type' => self::T_DOUBLE,
+                            ], [
+                                'name' => '活跃用户UV价值',
+                                'desc' => '活跃用户UV价值',
+                                'value' => 'value_uv',
+                                'data_type' => self::T_DOUBLE,
+                            ], [
+                                'name' => '用户转化率',
+                                'desc' => '用户转化率',
+                                'value' => 'uv_change_rate',
+                                'data_type' => self::T_PERCENTAGE,
+                            ], [
+                                'name' => '下单客单价',
+                                'desc' => '下单客单价',
+                                'value' => 'order_avg',
+                                'data_type' => self::T_DOUBLE,
+                            ], [
+                                'name' => 'PV转化率',
+                                'desc' => 'PV转化率',
+                                'value' => 'pv_change_rate',
+                                'data_type' => self::T_PERCENTAGE,
+                            ], [
+                                'name' => '点击转化率',
+                                'desc' => '点击转化率',
+                                'value' => 'click_change_rate',
+                                'data_type' => self::T_PERCENTAGE,
+                            ],
+                        ],
+                    ], [
+                        'name' => '其他',
+                        'desc' => '',
+                        'value' => 'other',
+                        'child' => [
+                            [
+                                'name' => '7日回访率',
+                                'desc' => '7日回访率',
+                                'value' => 'return_rate_7',
+                                'data_type' => self::T_PERCENTAGE,
+                            ], [
+                                'name' => '人均PV',
+                                'desc' => '人均PV',
+                                'value' => 'pv_avg',
+                                'data_type' => self::T_DOUBLE,
+                            ], [
+                                'name' => 'CTR',
+                                'desc' => 'CTR(点击量/PV量)',
+                                'value' => 'ctr',
+                                'data_type' => self::T_PERCENTAGE,
+                            ],
+                        ],
+                    ],
+*/

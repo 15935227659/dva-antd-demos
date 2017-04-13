@@ -13,7 +13,6 @@ import {
   Col,
 } from 'antd'
 import _ from 'lodash'
-import pinyin from 'js-pinyin'
 
 const FormItem = Form.Item
 const TabPane = Tabs.TabPane

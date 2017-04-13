@@ -28,8 +28,11 @@ final class Report extends Model
         return $result;
     }
 
-    public static function datas(Request $request)
+    public static function datas(Request $request, $info)
     {
+        $tableName = $info->table_name; // 表名
+        $tableType = $info->table_type; // 分表类型
+        $dims = json_decode($info->dims, true);
 
         $result = [];
         $name = $request->input('name') ?? 'basic';
@@ -37,19 +40,22 @@ final class Report extends Model
         $end = $request->input('end') ?? date('Y-m-d', strtotime('-1 day'));
         $start = $request->input('start') ?? date('Y-m-d', strtotime('-15 day'));
 
+        if(app()->environment('local')) { // for test only
+            $end = '2015-01-30';
+            $start = '2015-01-01';
+        }
         $days = ceil((strtotime($end) - strtotime($start)) % 86400);
 
         $terminal = $request->input('dim_type') ?? 4; // 默认微信
         $orderStatus = $request->input('gmv_type') ?? 1; // 下单
         $bizzType = $request->input('dim_det') ?? 1; // 搜索业务
         $orderType = 1;
-        $result = app('db')->connection('reports')->table('app_rec_general')
-                  ->where('dim_det', '=', $bizzType)
-                  ->where('gmv_type', '=', $orderStatus)
-                  ->where('dim_type', '=', $terminal)
-                  ->where('order_type', '=', $orderType)
-                  ->whereBetween('dt', [$start, $end])
-                  ->orderBy('dt', 'DESC')
+        $result = app('db')->connection('reports')->table($tableName)
+                  ->whereBetween('dt', [$start, $end]);
+        foreach($dims as $dim) {
+            $result = $result->where($dim['alias'], '=', $request->input($dim['alias']));
+        }
+        $result = $result->orderBy('dt', 'DESC')
                   ->get();
 
         $newRes = [];
@@ -71,5 +77,9 @@ final class Report extends Model
             }
         }
         return $result;
+    }
+
+    public static function info($path) {
+        return static::where('alias', '=', $path)->firstOrFail();
     }
 }

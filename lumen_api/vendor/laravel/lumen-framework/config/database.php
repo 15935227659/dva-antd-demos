@@ -73,11 +73,11 @@ return [
 
         'reports' => [
             'driver'    => 'mysql',
-            'host'      => env('DB_HOST', 'localhost'),
+            'host'      => env('DB_HOST_REPORT', 'localhost'),
             'port'      => env('DB_PORT', 3306),
-            'database'  => env('DB_REPORTS_DATABASE', 'search_misc'),
-            'username'  => env('DB_USERNAME', 'forge'),
-            'password'  => env('DB_PASSWORD', ''),
+            'database'  => env('DB_DATABASE_REPORT', ''),
+            'username'  => env('DB_USERNAME_REPORT', 'forge'),
+            'password'  => env('DB_PASSWORD_REPORT', ''),
             'charset'   => env('DB_CHARSET', 'utf8'),
             'collation' => env('DB_COLLATION', 'utf8_unicode_ci'),
             'prefix'    => env('DB_PREFIX', ''),
