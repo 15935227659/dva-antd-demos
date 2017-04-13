@@ -119,13 +119,16 @@ const Modal = ({
   }
   const removeDim = (k) => {
     const keys = getFieldValue('dims')
+    if(dimIndex === 0) {
+      dimIndex = keys.length
+    }
 
     setFieldsValue({
       dims: keys.filter(key => key !== k)
     })
   }
 
-  const addQuote = () => {
+  const addQuote = (k) => {
     const keys = getFieldValue('quotes')
     /**
      * index的初始化值为0，对于编辑的情况，初始化值需要为项目条目数
@@ -142,8 +145,11 @@ const Modal = ({
 
     quoteIndex++
   }
-  const removeQuote = () => {
+  const removeQuote = (k) => {
     const keys = getFieldValue('quotes')
+    if(quoteIndex === 0) {
+      quoteIndex = keys.length
+    }
 
     setFieldsValue({
       quotes: keys.filter(key => key !== k)
@@ -407,6 +413,17 @@ const Modal = ({
                   {
                     required: true,
                     message: '请输入报表名称',
+                  },
+                ],
+              })(<Input />)}
+            </FormItem>
+            <FormItem label="报表别名：" hasFeedback {...formItemLayout}>
+              {getFieldDecorator('alias', {
+                initialValue: item.alias || '',
+                rules: [
+                  {
+                    required: true,
+                    message: '请输入报表别名',
                   },
                 ],
               })(<Input />)}

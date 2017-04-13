@@ -1,7 +1,6 @@
 import * as servs from '../services/reports'
 import { parse } from 'qs'
 const Cookie = require('js-cookie')
-import pinyin from 'js-pinyin'
 
 export default {
   namespace: 'reports',
@@ -55,7 +54,6 @@ export default {
       const { data, headers } = yield call(servs.create, {
         ...payload,
         username: Cookie.get('user_name'),
-        alias: pinyin.getFullChars(payload.name)
       })
       yield put({ type: 'reload' })
     },
@@ -65,7 +63,6 @@ export default {
       const newItem = {
         ...payload,
         id,
-        alias: pinyin.getFullChars(payload.name),
       }
       const { data, headers } = yield call(servs.update, newItem)
       yield put({ type: 'reload' })
@@ -109,38 +106,6 @@ export default {
         ...state,
         ...action.payload,
         modalVisible: false,
-      }
-    },
-    addDim(state, action) {
-      let { curDims, currentItem } = state
-      curDims = curDims.concat(action.payload)
-      return {
-        ...state,
-        curDims,
-      }
-    },
-    removeDim(state, action) {
-      let { curDims, currentItem } = state
-      curDims.splice(action.payload.index, 1)
-      return {
-        ...state,
-        curDims,
-      }
-    },
-    addQuote(state, action) {
-      let { curQuotes } = state
-      curQuotes = curQuotes.concat(action.payload)
-      return {
-        ...state,
-        curQuotes,
-      }
-    },
-    removeQuote(state, action) {
-      let { curQuotes } = state
-      curQuotes.splice(action.payload.index, 1)
-      return {
-        ...state,
-        curQuotes,
       }
     },
   }
