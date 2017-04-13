@@ -34,6 +34,7 @@ class ReportController extends Controller
                     'field' => $request->input('quotes-field-' . $index),
                     'data_type' => $request->input('quotes-type-' . $index),
                     'group' => $group,
+                    'deftrend' => !!$request->input('quotes-deftrend-' . $index),
                     'precision' => $request->input('quotes-precision-' . $index),
                 ];
 
@@ -49,6 +50,7 @@ class ReportController extends Controller
                     'name' => $request->input('dims-name-' . $dIndex),
                     'value' => $request->input('dims-value-' . $dIndex),
                     'vtype' => $request->input('dims-vtype-' . $dIndex),
+                    'default' => $request->input('dims-default-' . $dIndex),
                     'inputtype' => $request->input('dims-inputtype-' . $dIndex),
                 ];
             }
@@ -97,6 +99,7 @@ class ReportController extends Controller
                     'field' => $request->input('quotes-field-' . $index),
                     'data_type' => $request->input('quotes-type-' . $index),
                     'group' => $group,
+                    'deftrend' => !!$request->input('quotes-deftrend-' . $index),
                     'precision' => $request->input('quotes-precision-' . $index),
                 ];
 
@@ -113,6 +116,7 @@ class ReportController extends Controller
                     'name' => $request->input('dims-name-' . $dIndex),
                     'value' => $request->input('dims-value-' . $dIndex),
                     'vtype' => $request->input('dims-vtype-' . $dIndex),
+                    'default' => $request->input('dims-default-' . $dIndex),
                     'inputtype' => $request->input('dims-inputtype-' . $dIndex),
                 ];
             }
@@ -181,11 +185,17 @@ class ReportController extends Controller
                         ];
                     }
                 }
+                $default = array_search($dim['default'], $values);
+                if($default === false) {
+                    $default = 1; // 使用第一个值
+                } else {
+                    $default = $default + 1;
+                }
                 $dims[$dim['alias']] = [
                     'name' => $dim['name'],
                     'type' => $dim['inputtype'],
                     'list' => $list,
-                    'default' => 1,
+                    'default' => $default,
                 ];
             }
         }
@@ -196,18 +206,22 @@ class ReportController extends Controller
 
     private function _getQuotes($configQuotes) {
         $quotes = [];
+        $selected = [];
         if(sizeof($configQuotes)) {
             foreach($configQuotes as $quote) {
                 $groupName = $quote['group'];
                 $groupPy = Cutf8Py::encodeGBK($groupName, 'all');
                 $quote['value'] = $quote['field'];
                 $quotes[$groupPy][] = $quote;
+                if ($quote['deftrend']) {
+                    $selected[] = $quote['value'];
+                }
             }
         }
 
-        $result = [];
+        $list = [];
         foreach($quotes as $group => $qs) {
-            $result[] = [
+            $list[] = [
                 'name' => $qs[0]['group'],
                 'desc' => $qs[0]['group'],
                 'value' => $group,
@@ -215,7 +229,15 @@ class ReportController extends Controller
             ];
         }
 
-        return $result;
+        return [
+            'list' => $list,
+            'selected' => $selected,
+            'types' => [
+                'int' => self::T_INT,
+                'double' => self::T_DOUBLE,
+                'percentage' => self::T_PERCENTAGE,
+            ],
+        ];
     }
 
     /**
@@ -236,15 +258,7 @@ class ReportController extends Controller
         $result = [
             'info' => $reportInfo,
             'dims' => $dims,
-            'quotes' => [
-                'list' => $quotes,
-                'selected' => ['query'],
-                'types' => [
-                    'int' => self::T_INT,
-                    'double' => self::T_DOUBLE,
-                    'percentage' => self::T_PERCENTAGE,
-                ],
-            ],
+            'quotes' => $quotes,
         ];
         $response = [
             'code' => 200,

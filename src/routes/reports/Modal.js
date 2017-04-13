@@ -5,6 +5,7 @@ import {
   Input,
   InputNumber,
   Select,
+  Checkbox,
   Radio,
   Tabs,
   Button,
@@ -205,11 +206,11 @@ const Modal = ({
               rules: [{
                 required: true,
                 whitespace: true,
-                message: '请输入唯一的维度标志符',
+                message: '请输入维度字段名',
               }],
               validateTrigger: ['onChange', 'onBlur'],
             })(
-              <Input placeholder="维度别名" />
+              <Input placeholder="字段名" />
             )}
           </FormItem>
         </td>
@@ -246,6 +247,22 @@ const Modal = ({
               }],
             })(
               <Input placeholder="维度值" />
+            )}
+          </FormItem>
+        </td>
+        <td>
+          <FormItem formItemLayoutWithoutLabel
+          >
+            {getFieldDecorator(`dims-default-${k}`, {
+              initialValue: iDim(k, 'default'),
+              rules: [{
+                required: true,
+                whitespace: true,
+                message: '请输入维度默认值',
+              }],
+              validateTrigger: ['onChange', 'onBlur'],
+            })(
+              <Input placeholder="默认值" />
             )}
           </FormItem>
         </td>
@@ -388,6 +405,17 @@ const Modal = ({
           </FormItem>
         </td>
         <td>
+          <FormItem formItemLayoutWithoutLabel
+          >
+            {getFieldDecorator(`quotes-deftrend-${k}`, {
+              valuePropName: 'checked',
+              initialValue: iQuote(k, 'deftrend'),
+            })(
+              <Checkbox />
+            )}
+          </FormItem>
+        </td>
+        <td>
           <Button className={styles.del_btn}
               onClick={() => removeQuote(k)}>
             <Icon
@@ -472,9 +500,10 @@ const Modal = ({
               <thead>
                 <tr>
                   <th className={styles.w120}>维度名称</th>
-                  <th className={styles.w100}>维度别名</th>
+                  <th className={styles.w100}>字段名</th>
                   <th className={styles.w120}>值类型</th>
                   <th>维度值</th>
+                  <th className={styles.w100}>默认值</th>
                   <th className={styles.w100}>控件类型</th>
                   <th className={styles.op}>操作</th>
                 </tr>
@@ -484,14 +513,16 @@ const Modal = ({
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan="6">
+                  <td colSpan="7">
                     <div className={styles.opdesc}>
                       <strong>操作说明:</strong>
                       <ul>
                         <li>维度信息定义报表展示的过滤区域的UI呈现以及这些过滤区域的初始化数据的来源。</li>
                         <li>维度名称：过滤控件的中文或英文可读性强的名称。</li>
-                        <li>维度别名：用于唯一标示控件的字符串，一般使用英文字母、下划线和数字组成。同一报表中，该字段的值需保持唯一。</li>
-                        <li>值类型：维度控件都有初始值，它们的值可以通过枚举或特定数据表两种方式来指定。对于维度值比较少的，采用穷举的方式列出，维度值使用英文逗号分割开。系统会自动对这些值进行索引，编号以1开始，逐个递增。使用特定维度表指定维度初始化值的，该字段选择“数据表”类型，然后在维度值字段输入维度表的名称。(eg: some_db.some_dim_name)</li>
+                        <li>字段名：对应数据表中维度字段的名称。</li>
+                        <li>值类型：维度控件都有初始值，它们的值可以通过枚举或特定数据表两种方式来指定。</li>
+                        <li>维度值： 对于维度值比较少的，采用穷举的方式列出，维度值使用英文逗号分割开。系统会自动对这些值进行索引，编号以1开始，逐个递增。使用特定维度表指定维度初始化值的，该字段选择“数据表”类型，然后在维度值字段输入维度表的名称。(eg: some_db.some_dim_name)</li>
+                        <li>默认值：该值为报表展示时默认选中的维度值。每个维度都需要指定一个默认值。</li>
                         <li>控件类型：该字段用于控制报表展示维度过滤控件时选择单选模式还是多选模式。</li>
                       </ul>
                     </div>
@@ -516,6 +547,7 @@ const Modal = ({
                   <th className={styles.w100}>字段名称</th>
                   <th className={styles.w100}>数值类型</th>
                   <th className={styles.w80}>数值精度</th>
+                  <th className={styles.w80}>默认曲线</th>
                   <th className={styles.op}>操作</th>
                 </tr>
               </thead>
@@ -524,7 +556,7 @@ const Modal = ({
               </tbody>
               <tfoot>
                 <tr>
-                  <td colSpan="7">
+                  <td colSpan="8">
                     <div className={styles.opdesc}>
                       <strong>操作说明:</strong>
                       <ul>
@@ -535,6 +567,7 @@ const Modal = ({
                         <li>字段名称：指标数据在展示时从具体数据源中取值的逻辑，一般使用对应表中的字段；有时候也使用一些SQL聚合语句，比如SUM(field1) as field1。</li>
                         <li>数值类型：指标数值在趋势图或数据表中展示时格式化的类型，目前系统支持的类型有：整数、小数和百分比。</li>
                         <li>数值精度：针对小数类型的指标，为了精确展示数据值，允许自定义每个指标(小数)的显示精度。</li>
+                        <li>默认曲线：对于趋势图而言，这里可以定制默认显示指标趋势线。</li>
                       </ul>
                     </div>
                   </td>
