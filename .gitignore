@@ -5,6 +5,7 @@
 
 # production
 /dist
+/console-ct
 
 # misc
 .DS_Store
